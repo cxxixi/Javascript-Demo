@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div ng-app="myApp" ng-controller="myController">
+        <ul>
+            <li>Movie Name</li>
+            <li><input type="text" ng-model="name" /></li>
+        </ul>
+        <ul>
+            <li>Name of Director</li>
+            <li><input type="text" ng-model="director" /></li>
+        </ul>
+        <ul>
+            <li> </li><li><button ng-click="addRow()"> Add Row </button></li>
+        </ul>
+
+        <!--CREATE A TABLE-->
+        <table> 
+            <tr>
+                <th>Code</th>
+                    <th>Movie Name</th>
+                        <th>Director</th>
+            </tr>
+
+            <tr ng-repeat="movies in movieArray">
+                <td><label>{{$index + 1}}</label></td>
+                <td><label>{{movies.name}}</label></td>
+                <td><label>{{movies.director}}</label></td>
+                <td><input type="checkbox" ng-model="movies.Remove"/></td>
+            </tr>
+        </table>
+
+        <div>
+            <button ng-click="submit()">Submit Data</button>   
+                <button ng-click="removeRow()">Remove Row</button>
+        </div>
+
+        <div id="display" style="padding:10px 0;">{{display}}</div>
+    </div>
+</body>
+
+<!--The Controller-->
+<script>
+    var app = angular.module('myApp', []);
+    app.controller('myController', function ($scope) {
+
+        // JSON ARRAY TO POPULATE TABLE.
+        $scope.movieArray =
+        [
+            { 'name': 'Total Eclipse', 'director': 'Agniezka Hollan' },
+            { 'name': 'My Left Foot', 'director': 'Jim Sheridan' },
+            { 'name': 'Forest Gump', 'director': 'Robert Zemeckis' }
+        ];
+
+        // GET VALUES FROM INPUT BOXES AND ADD A NEW ROW TO THE TABLE.
+        $scope.addRow = function () {
+            if ($scope.name != undefined && $scope.director != undefined) {
+                var movie = [];
+                movie.name = $scope.name;
+                movie.director = $scope.director;
+
+                $scope.movieArray.push(movie);
+
+                // CLEAR TEXTBOX.
+                $scope.name = null;
+                $scope.director = null;
+            }
+        };
+
+        // REMOVE SELECTED ROW(s) FROM TABLE.
+        $scope.removeRow = function () {
+            var arrMovie = [];
+            angular.forEach($scope.movieArray, function (value) {
+                if (!value.Remove) {
+                    arrMovie.push(value);
+                }
+            });
+            $scope.movieArray = arrMovie;
+        };
+
+        // FINALLY SUBMIT THE DATA.
+        $scope.submit = function () {
+            var arrMovie = [];
+            angular.forEach($scope.movieArray, function (value) {
+                arrMovie.push('Name:' + value.name + ', Director:' + value.director);
+            });
+            $scope.display = arrMovie;
+        };
+    });
+</script>
+</html>
