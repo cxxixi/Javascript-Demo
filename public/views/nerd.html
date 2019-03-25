@@ -1,169 +1,139 @@
 <html ng-app="NerdCtrl">
+    <head>
+        <link rel="stylesheet" href="../css/style.css">
+        <script src="../js/controllers/NerdCtrl.js"></script>
+    </head>
+    <body>
+        <div >
+        	<h3>Basic Database Concepts</h3>
+        </div>
+    <!-- #class="jumbotron text-center" -->
+
+
+        <div id="NW">
+        	<p>Buffer Pool</p>
+        	<div ng-controller="Controller2">
+                <table> 
+                    <tr ng-repeat="txn in Array | unique : 'pageid'">
+                        <td><label>{{txn.pageid}}</label></td>
+                    </tr>
+                </table>
+                <div>
+                    <button ng-click="commit()">Commit</button>   
+                </div>
+                <div id="display" style="padding:10px 0;">{{display}}</div>
+            </div>
+        </div>
 
 
 
-<head>
-	<link rel="stylesheet" href="../css/style.css">
-	<script src="../js/controllers/NerdCtrl.js"></script>
-</head>
 
-<div >
-	<h3>Basic Database Concepts</h3>
-</div>
-<!-- #class="jumbotron text-center" -->
+        <div id="NE">
+        	<p>Transaction Table</p>
+        	<div ng-controller="Controller1">
+                <ul>
+                    <li>Transaction No</li>
+                    <li><input type="text" ng-model="txn_no" /></li>
+                </ul>
+                <ul>
+                    <li>Operation Type</li>
+                    <li><input type="text" ng-model="txn_type" /></li>
+                </ul>
+                <ul>
+                    <li>Page Id.</li>
+                    <li><input type="text" ng-model="pageid" /></li>
+                </ul>
+                <ul>
+                    <li> </li><li><button ng-click="addRow()"> Add Row </button></li>
+                </ul>
+
+                <table> 
+                    <tr>
+                        <th>No.</th>
+                            <th>Transaction No.</th>
+                                <th>Operation Type</th>
+                                <th>Page Id.</th>
+                    </tr>
+                    <tr ng-repeat="txn in Array">
+                        <td><label>{{$index + 1}}</label></td>
+                        <td><label>{{txn.txn_no}}</label></td>
+                        <td><label>{{txn.txn_type}}</label></td>
+                        <td><label>{{txn.pageid}}</label></td>
+                        <td><input type="checkbox" ng-model="txn.Remove"/></td>
+                    </tr>
+                </table>
+
+                <div>
+                    <button ng-click="submit()">Submit Data</button>   
+                        <button ng-click="removeRow()">Remove Row</button>
+                </div>
+
+                <div id="display" style="padding:10px 0;">{{display}}</div>
+            </div>
+        </div>
 
 
-<div id="NW">
-	<p>Buffer Pool</p>
-	<div ng-controller="Controller2">
+    <div id="SW">
+    	<!-- <p>Transaction Table</p>
+    	<div ng-app="NerdCtrl" ng-controller="NerdController">
+            <ul>
+                <li>Transaction No</li>
+                <li><input type="text" ng-model="txn_no" /></li>
+            </ul>
+            <ul>
+                <li>Operation Type</li>
+                <li><input type="text" ng-model="txn_type" /></li>
+            </ul>
+            <ul>
+                <li>Page Id.</li>
+                <li><input type="text" ng-model="pageid" /></li>
+            </ul>
+            <ul>
+                <li> </li><li><button ng-click="addRow()"> Add Row </button></li>
+            </ul>
 
-        <table> 
+            <table> 
+                <tr>
+                    <th>Code</th>
+                        <th>Transaction No.</th>
+                            <th>Operation Type</th>
+                            <th>Page Id.</th>
+                </tr>
+                <tr ng-repeat="txn in movieArray">
+                    <td><label>{{$index + 1}}</label></td>
+                    <td><label>{{txn.txn_no}}</label></td>
+                    <td><label>{{txn.txn_type}}</label></td>
+                    <td><label>{{txn.pageid}}</label></td>
+                    <td><input type="checkbox" ng-model="txn.Remove"/></td>
+                </tr>
+            </table>
 
-            <tr ng-repeat="movies in movieArray">
-              <!--   <td><label>{{$index + 1}}</label></td>
-                <td><label>{{movies.txn_no}}</label></td>
-                <td><label>{{movies.txn_type}}</label></td> -->
-                <td><label>{{movies.pageid}}</label></td>
-            </tr>
-        </table>
+            <div>
+                <button ng-click="submit()">Submit Data</button>   
+                    <button ng-click="removeRow()">Remove Row</button>
+            </div>
 
-        <div id="display" style="padding:10px 0;">{{display}}</div>
+            <div id="display" style="padding:10px 0;">{{display}}</div>
+        </div> -->
     </div>
-</div>
+        <div id="SE">
+        <p>Transaction Log</p>
+        	<div ng-controller="Controller2">
+                <table> 
+                    <tr ng-repeat="txn in dirtypage">
+                        <td><label>{{$index + 1}}</label></td>
+                        <td><label>{{txn.txn_no}}</label></td>
+                        <td><label>{{txn.txn_type}}</label></td>
+                        <td><label>{{txn.pageid}}</label></td>
+                        <td><input type="checkbox" ng-model="txn.Remove"/></td>
+                    </tr>
+                </table>
 
-
-
-
-<div id="NE">
-	<p>Transaction Table</p>
-	<div ng-controller="Controller1">
-        <ul>
-            <li>Transaction No</li>
-            <li><input type="text" ng-model="txn_no" /></li>
-        </ul>
-        <ul>
-            <li>Operation Type</li>
-            <li><input type="text" ng-model="txn_type" /></li>
-        </ul>
-        <ul>
-            <li>Page Id.</li>
-            <li><input type="text" ng-model="pageid" /></li>
-        </ul>
-        <ul>
-            <li> </li><li><button ng-click="addRow()"> Add Row </button></li>
-        </ul>
-
-        <table> 
-            <tr>
-                <th>Code</th>
-                    <th>Transaction No.</th>
-                        <th>Operation Type</th>
-                        <th>Page Id.</th>
-            </tr>
-            <tr ng-repeat="movies in movieArray">
-                <td><label>{{$index + 1}}</label></td>
-                <td><label>{{movies.txn_no}}</label></td>
-                <td><label>{{movies.txn_type}}</label></td>
-                <td><label>{{movies.pageid}}</label></td>
-                <td><input type="checkbox" ng-model="movies.Remove"/></td>
-            </tr>
-        </table>
-
-        <div>
-            <button ng-click="submit()">Submit Data</button>   
-                <button ng-click="removeRow()">Remove Row</button>
+                <div id="display" style="padding:10px 0;">{{display}}</div>
+            </div>
+        	
         </div>
-
-        <div id="display" style="padding:10px 0;">{{display}}</div>
-    </div>
-</div>
-<div id="SW">
-	<!-- <p>Transaction Table</p>
-	<div ng-app="NerdCtrl" ng-controller="NerdController">
-        <ul>
-            <li>Transaction No</li>
-            <li><input type="text" ng-model="txn_no" /></li>
-        </ul>
-        <ul>
-            <li>Operation Type</li>
-            <li><input type="text" ng-model="txn_type" /></li>
-        </ul>
-        <ul>
-            <li>Page Id.</li>
-            <li><input type="text" ng-model="pageid" /></li>
-        </ul>
-        <ul>
-            <li> </li><li><button ng-click="addRow()"> Add Row </button></li>
-        </ul>
-
-        <table> 
-            <tr>
-                <th>Code</th>
-                    <th>Transaction No.</th>
-                        <th>Operation Type</th>
-                        <th>Page Id.</th>
-            </tr>
-            <tr ng-repeat="movies in movieArray">
-                <td><label>{{$index + 1}}</label></td>
-                <td><label>{{movies.txn_no}}</label></td>
-                <td><label>{{movies.txn_type}}</label></td>
-                <td><label>{{movies.pageid}}</label></td>
-                <td><input type="checkbox" ng-model="movies.Remove"/></td>
-            </tr>
-        </table>
-
-        <div>
-            <button ng-click="submit()">Submit Data</button>   
-                <button ng-click="removeRow()">Remove Row</button>
-        </div>
-
-        <div id="display" style="padding:10px 0;">{{display}}</div>
-    </div> -->
-</div>
-<div id="SE">
-<!-- <p>Transaction Table</p>
-	<div ng-app="NerdCtrl" ng-controller="NerdController">
-        <ul>
-            <li>Transaction No</li>
-            <li><input type="text" ng-model="txn_no" /></li>
-        </ul>
-        <ul>
-            <li>Operation Type</li>
-            <li><input type="text" ng-model="txn_type" /></li>
-        </ul>
-        <ul>
-            <li>Page Id.</li>
-            <li><input type="text" ng-model="pageid" /></li>
-        </ul>
-        <ul>
-            <li> </li><li><button ng-click="addRow()"> Add Row </button></li>
-        </ul>
-
-        <table> 
-            <tr>
-                <th>Code</th>
-                    <th>Transaction No.</th>
-                        <th>Operation Type</th>
-                        <th>Page Id.</th>
-            </tr>
-            <tr ng-repeat="movies in movieArray">
-                <td><label>{{$index + 1}}</label></td>
-                <td><label>{{movies.txn_no}}</label></td>
-                <td><label>{{movies.txn_type}}</label></td>
-                <td><label>{{movies.pageid}}</label></td>
-                <td><input type="checkbox" ng-model="movies.Remove"/></td>
-            </tr>
-        </table>
-
-        <div>
-            <button ng-click="submit()">Submit Data</button>   
-                <button ng-click="removeRow()">Remove Row</button>
-        </div>
-
-        <div id="display" style="padding:10px 0;">{{display}}</div>
-    </div> -->
-	
-</div>
+    </body>
 </html>
 
 

@@ -3,36 +3,58 @@ var myApp = angular.module('NerdCtrl', [])
 myApp.service('sharedModels', [function () {
 
     // Shared Models
-    this.movieArray = [];
+    this.Array = [];
     this.id_set = new Set([]);
+    this.DirtyPage = [];
 
 
 }]);
 
-// factory('sharedModels',function(){
-//     return 
-//         movieArray = [];
-// }).
+myApp.filter("unique", function() {
+  // we will return a function which will take in a collection
+  // and a keyname
+  return function(collection, keyname) {
+    // we define our output and keys array;
+    var output = [],
+      keys = [];
 
-// myApp.controller('Ctrl1', ['$scope', 'sharedModels', function($scope, sharedModels) {
-    
-//     $scope.myBreakfast = sharedModels.breakfast;
-// }]);
+    // we utilize angular's foreach function
+    // this takes in our original collection and an iterator function
+    angular.forEach(collection, function(item) {
+      // we check to see whether our object exists
+      var key = item[keyname];
+      // if it's not already part of our keys array
+      if (keys.indexOf(key) === -1) {
+        // add it to our keys array
+        keys.push(key);
+        // push this item to our final output array
+        output.push(item);
+      }
+    });
+
+    return output;
+  };
+});
 
 myApp.controller('Controller1', function($scope, sharedModels) {
 
-		$scope.movieArray = sharedModels.movieArray;
+        $scope.Array = sharedModels.Array;
         $scope.id_set = sharedModels.id_set;
+        $scope.dirtypage = sharedModels.DirtyPage;
         // GET VALUES FROM INPUT BOXES AND ADD A NEW ROW TO THE TABLE.
         $scope.addRow = function () {
             if ($scope.txn_no != undefined && $scope.txn_type != undefined && $scope.pageid != undefined) {
-                var movie = [];
-                movie.txn_no = $scope.txn_no;
-                movie.txn_type = $scope.txn_type;
-                movie.pageid = $scope.pageid;
+                var txn = [];
+                txn.txn_no = $scope.txn_no;
+                txn.txn_type = $scope.txn_type;
+                txn.pageid = $scope.pageid;
 
-                $scope.movieArray.push(movie);
-                // $scope.id_set.add(movie.pageid);
+                $scope.Array.push(txn);
+                // create a dirty page
+                if ($scope.txn_type=="w"){
+                    $scope.dirtypage.push(txn);
+                }
+                // $scope.id_set.add(txn.pageid);
 
                 // CLEAR TEXTBOX.
                 $scope.txn_no = null;
@@ -41,69 +63,53 @@ myApp.controller('Controller1', function($scope, sharedModels) {
             }
         };
 
+        sharedModels.DirtyPage = $scope.dirtypage;
+
+
         // REMOVE SELECTED ROW(s) FROM TABLE.
         $scope.removeRow = function () {
-            var arrMovie = [];
-            angular.forEach($scope.movieArray, function (value) {
+            var arrTxn = [];
+            angular.forEach($scope.Array, function (value) {
                 if (!value.Remove) {
-                    arrMovie.push(value);
+                    arrTxn.push(value);
                 }
             });
-            $scope.movieArray = arrMovie;
+            $scope.Array = arrTxn;
         };
 
         // FINALLY SUBMIT THE DATA.
         $scope.submit = function () {
-            var arrMovie = [];
-            angular.forEach($scope.movieArray, function (value) {
-                arrMovie.push('txn_no:' + value.txn_no + ', type:' + value.txn_type, ', pageid:' + value.pageid);
+            var arrTxn = [];
+            angular.forEach($scope.Array, function (value) {
+                arrTxn.push('txn_no:' + value.txn_no + ', type:' + value.txn_type, ', pageid:' + value.pageid);
             });
-            $scope.display = arrMovie;
+            $scope.display = arrTxn;
         };
 });
 
 myApp.controller('Controller2', function($scope, sharedModels) {
 
-		$scope.movieArray = sharedModels.movieArray;
+        $scope.Array = sharedModels.Array;
         $scope.id_set = sharedModels.id_set;
 
-        // GET VALUES FROM INPUT BOXES AND ADD A NEW ROW TO THE TABLE.
-        $scope.addRow = function () {
-            if ($scope.txn_no != undefined && $scope.txn_type != undefined && $scope.pageid != undefined) {
-                var movie = [];
-                movie.txn_no = $scope.txn_no;
-                movie.txn_type = $scope.txn_type;
-                movie.pageid = $scope.pageid;
-
-                $scope.movieArray.push(movie);
-                $scope.id_set.add(movie.pageid);
-
-                // CLEAR TEXTBOX.
-                $scope.txn_no = null;
-                $scope.txn_type = null;
-                $scope.pageid = null;
-            }
+        $scope.commit = function () {
+            $scope.dirtypage = sharedModels.DirtyPage;
         };
+        sharedModels.DirtyPage = [];
 
-        // REMOVE SELECTED ROW(s) FROM TABLE.
-        $scope.removeRow = function () {
-            var arrMovie = [];
-            angular.forEach($scope.movieArray_1, function (value) {
-                if (!value.Remove) {
-                    arrMovie.push(value);
-                }
-            });
-            $scope.movieArray_1 = arrMovie;
-        };
-
-        // FINALLY SUBMIT THE DATA.
-        $scope.submit = function () {
-            var arrMovie = [];
-            angular.forEach($scope.movieArray_1, function (value) {
-                arrMovie.push('txn_no:' + value.txn_no + ', type:' + value.txn_type, ', pageid:' + value.pageid);
-            });
-            $scope.display = arrMovie;
-        };
 });
+
+// myApp.controller('Controller3', function($scope, sharedModels) {
+
+//         // $scope.Array = sharedModels.Array;
+//         // $scope.id_set = sharedModels.id_set;
+//         $scope.dirtypage = sharedModels.DirtyPage;
+//         // sharedModels.DirtyPage = [];
+
+// });
+
+
+
+
 
 
