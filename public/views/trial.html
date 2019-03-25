@@ -1,95 +1,76 @@
-<!DOCTYPE html>
-<html>
+<!-- <!DOCTYPE html>
+<html ng-app="myApp">
+
+  <head>
+    <link rel="stylesheet" href="style.css" />
+    
+  </head>
+
+  <body>
+    <h1>Let's have the same breakfast</h1>
+    <p>An example showing how to share data between controllers using a service</p>
+    
+    <div ng-controller="Ctrl1">
+        <h2>Controller 1 Says:</h2>
+        <p>I'm having: <input ng-model="myBreakfast.food" type="text" /></p>
+    </div>
+    
+    <div ng-controller="Ctrl2">
+        <h2>Controller 2 Says:</h2>
+        <p>You're having: <input ng-model="yourBreakfast.food" type="text" /></p>
+    </div>
+    
+    <div ng-controller="Ctrl3">
+        <h2>Controller 3 Says:</h2>
+        <p>Here's what we're having: <b>{{ourBreakfast.food}}</b></p>
+    </div>
+    
+    <p><b>Important:</b> notice the model used in the inputs is an object property, not
+        a primitive (like a string, number, boolean, etc.). In Angular, we're using
+        prototypical inheritance so only objects will be referenced across scopes.
+    </p>
+    <script src="http://code.angularjs.org/1.2.1/angular.js"></script>
+    <script src="../js/controllers/testCtrl.js"></script>
+  </body>
+
+</html> -->
+
+
+<html lang="zh" ng-app="myApp">
 <head>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
-    <link rel="stylesheet" href="../css/style.css">
+    <meta charset="UTF-8">
+    <title>AngularJS入门学习</title>
+    <script type="text/javascript" src="../libs/angular/angular.min.js"></script>
 </head>
 <body>
-    <div ng-app="myApp" ng-controller="myController">
-        <ul>
-            <li>Movie Name</li>
-            <li><input type="text" ng-model="name" /></li>
-        </ul>
-        <ul>
-            <li>Name of Director</li>
-            <li><input type="text" ng-model="director" /></li>
-        </ul>
-        <ul>
-            <li> </li><li><button ng-click="addRow()"> Add Row </button></li>
-        </ul>
-
-        <!--CREATE A TABLE-->
-        <table> 
-            <tr>
-                <th>Code</th>
-                    <th>Movie Name</th>
-                        <th>Director</th>
-            </tr>
-
-            <tr ng-repeat="movies in movieArray">
-                <td><label>{{$index + 1}}</label></td>
-                <td><label>{{movies.name}}</label></td>
-                <td><label>{{movies.director}}</label></td>
-                <td><input type="checkbox" ng-model="movies.Remove"/></td>
-            </tr>
-        </table>
-
-        <div>
-            <button ng-click="submit()">Submit Data</button>   
-                <button ng-click="removeRow()">Remove Row</button>
-        </div>
-
-        <div id="display" style="padding:10px 0;">{{display}}</div>
-    </div>
+     <div ng-controller="childCtrl1">
+        {{name}}
+        <button ng-click="setName()">set name to jack jack jack</button>
+     </div>
+     <div ng-controller="childCtrl2">
+        {{name}}
+        <button ng-click="setName()">set name to tom tom tom</button>
+     </div>
 </body>
-
-<!--The Controller-->
-<script>
-    var app = angular.module('myApp', []);
-    app.controller('myController', function ($scope) {
-
-        // JSON ARRAY TO POPULATE TABLE.
-        $scope.movieArray =
-        [
-            { 'name': 'Total Eclipse', 'director': 'Agniezka Hollan' },
-            { 'name': 'My Left Foot', 'director': 'Jim Sheridan' },
-            { 'name': 'Forest Gump', 'director': 'Robert Zemeckis' }
-        ];
-
-        // GET VALUES FROM INPUT BOXES AND ADD A NEW ROW TO THE TABLE.
-        $scope.addRow = function () {
-            if ($scope.name != undefined && $scope.director != undefined) {
-                var movie = [];
-                movie.name = $scope.name;
-                movie.director = $scope.director;
-
-                $scope.movieArray.push(movie);
-
-                // CLEAR TEXTBOX.
-                $scope.name = null;
-                $scope.director = null;
-            }
-        };
-
-        // REMOVE SELECTED ROW(s) FROM TABLE.
-        $scope.removeRow = function () {
-            var arrMovie = [];
-            angular.forEach($scope.movieArray, function (value) {
-                if (!value.Remove) {
-                    arrMovie.push(value);
-                }
-            });
-            $scope.movieArray = arrMovie;
-        };
-
-        // FINALLY SUBMIT THE DATA.
-        $scope.submit = function () {
-            var arrMovie = [];
-            angular.forEach($scope.movieArray, function (value) {
-                arrMovie.push('Name:' + value.name + ', Director:' + value.director);
-            });
-            $scope.display = arrMovie;
-        };
-    });
+<script type="text/javascript">
+var app = angular.module('myApp', []);
+app.factory('dataService', function() {
+  var service = {
+     name:'我是林炳文'
+   };
+   return service;
+});
+app.controller('childCtrl1', function($scope,dataService) {
+    $scope.name = dataService.name;
+    $scope.setName = function() {
+         $scope.name = "set name to jack jack jack";
+    };
+});
+app.controller('childCtrl2', function($scope,dataService) {
+       $scope.name = dataService.name;
+       $scope.setName = function() {
+        $scope.name = "set name to tom tom tom";
+    };
+});
 </script>
 </html>

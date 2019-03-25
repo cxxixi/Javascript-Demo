@@ -1,5 +1,10 @@
+<html ng-app="NerdCtrl">
+
+
+
 <head>
 	<link rel="stylesheet" href="../css/style.css">
+	<script src="../js/controllers/NerdCtrl.js"></script>
 </head>
 
 <div >
@@ -10,11 +15,8 @@
 
 <div id="NW">
 	<p>Buffer Pool</p>
-	<div ng-app="NerdCtrl" ng-controller="NerdController">
+	<div ng-controller="Controller2">
 
-		<ul>
-            <li> </li><li><button ng-click="addRow()">dd</button></li>
-        </ul>
         <table> 
 
             <tr ng-repeat="movies in movieArray">
@@ -22,14 +24,8 @@
                 <td><label>{{movies.txn_no}}</label></td>
                 <td><label>{{movies.txn_type}}</label></td> -->
                 <td><label>{{movies.pageid}}</label></td>
-                <td><input type="checkbox" ng-model="movies.Remove"/></td>
             </tr>
         </table>
-
-        <div>
-            <button ng-click="submit()">Submit Data</button>   
-                <button ng-click="removeRow()">Remove Row</button>
-        </div>
 
         <div id="display" style="padding:10px 0;">{{display}}</div>
     </div>
@@ -40,7 +36,7 @@
 
 <div id="NE">
 	<p>Transaction Table</p>
-	<div ng-app="NerdCtrl" ng-controller="NerdController">
+	<div ng-controller="Controller1">
         <ul>
             <li>Transaction No</li>
             <li><input type="text" ng-model="txn_no" /></li>
@@ -168,5 +164,6 @@
     </div> -->
 	
 </div>
+</html>
 
 
