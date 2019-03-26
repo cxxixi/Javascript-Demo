@@ -7,7 +7,6 @@ myApp.service('sharedModels', [function () {
     this.id_set = new Set([]);
     this.DirtyPage = [];
 
-
 }]);
 
 myApp.filter("unique", function() {
@@ -18,8 +17,6 @@ myApp.filter("unique", function() {
     var output = [],
       keys = [];
 
-    // we utilize angular's foreach function
-    // this takes in our original collection and an iterator function
     angular.forEach(collection, function(item) {
       // we check to see whether our object exists
       var key = item[keyname];
@@ -36,20 +33,32 @@ myApp.filter("unique", function() {
   };
 });
 
-myApp.controller('Controller1', function($scope, sharedModels) {
+myApp.controller('Controller', function($scope, sharedModels) {
 
         $scope.Array = sharedModels.Array;
         $scope.id_set = sharedModels.id_set;
+
+        $scope.dirtypage = []
+        $scope.show_log = false;
+        $scope.show_buffer = true;
         // $scope.dirtypage = sharedModels.DirtyPage;
         // GET VALUES FROM INPUT BOXES AND ADD A NEW ROW TO THE TABLE.
         $scope.addRow = function () {
+
+            if (!$scope.show_buffer){
+                $scope.buffer = [];
+                $scope.show_buffer = true;
+            }
+            $scope.buffer = [];
             if ($scope.txn_no != undefined && $scope.txn_type != undefined && $scope.pageid != undefined) {
                 var txn = [];
                 txn.txn_no = $scope.txn_no;
                 txn.txn_type = $scope.txn_type;
                 txn.pageid = $scope.pageid;
 
+
                 $scope.Array.push(txn);
+                $scope.buffer.push(txn);
                 // create a dirty page
                 if ($scope.txn_type=="w"){
                     sharedModels.DirtyPage.push(txn);
@@ -66,9 +75,6 @@ myApp.controller('Controller1', function($scope, sharedModels) {
             }
         };
 
-        
-
-
         // REMOVE SELECTED ROW(s) FROM TABLE.
         $scope.removeRow = function () {
             var arrTxn = [];
@@ -80,41 +86,60 @@ myApp.controller('Controller1', function($scope, sharedModels) {
             $scope.Array = arrTxn;
         };
 
-        // FINALLY SUBMIT THE DATA.
-        $scope.submit = function () {
-            var arrTxn = [];
-            angular.forEach($scope.Array, function (value) {
-                arrTxn.push('txn_no:' + value.txn_no + ', type:' + value.txn_type, ', pageid:' + value.pageid);
-            });
-            $scope.display = arrTxn;
-        };
-});
-
-myApp.controller('Controller2', function($scope, sharedModels) {
-
-        $scope.Array = sharedModels.Array;
-        $scope.id_set = sharedModels.id_set;
-        // $scope.dirtypage = sharedModels.DirtyPage;
-        $scope.dirtypage = []
-        $scope.show = false;
-
-        $scope.commit = function () {
-            $scope.show = true;
+        $scope.commit_2 = function () {
+            $scope.show_log = true;
             $scope.dirtypage = sharedModels.DirtyPage;
+            $scope.show_buffer = false;
             // console.log($scope.dirtypage);
             // sharedModels.DirtyPage = [];
         };
         // $scope.show = false;
 
-        
-        $scope.flush = function () {
-            $scope.show = false;
-            // $scope.dirtypage = sharedModels.DirtyPage;
+        $scope.commit_1 = function () {
+            $scope.show_HardDisk = true;
+            $scope.dirtypage = sharedModels.DirtyPage;
+            $scope.show_buffer = false;
             // console.log($scope.dirtypage);
-            sharedModels.DirtyPage = [];
+            // sharedModels.DirtyPage = [];
         };
 
+        $scope.flush = function () {
+            $scope.show_log = false;
+
+            // $scope.dirtypage = sharedModels.DirtyPage;
+            // console.log($scope.dirtypage);
+            // sharedModels.DirtyPage = [];
+        };
 });
+
+// myApp.controller('Controller2', function($scope, sharedModels) {
+
+//         $scope.Array = sharedModels.Array;
+//         $scope.id_set = sharedModels.id_set;
+//         // $scope.dirtypage = sharedModels.DirtyPage;
+//         $scope.dirtypage = []
+//         $scope.show = false;
+//         $scope.show_buffer = true;
+
+//         $scope.commit = function () {
+//             $scope.show = true;
+//             $scope.dirtypage = sharedModels.DirtyPage;
+//             $scope.show_buffer = false;
+//             // console.log($scope.dirtypage);
+//             // sharedModels.DirtyPage = [];
+//         };
+//         // $scope.show = false;
+
+
+//         $scope.flush = function () {
+//             $scope.show = false;
+
+//             // $scope.dirtypage = sharedModels.DirtyPage;
+//             // console.log($scope.dirtypage);
+//             sharedModels.DirtyPage = [];
+//         };
+
+// });
 
 // myApp.controller('Controller3', function($scope, sharedModels) {
 
