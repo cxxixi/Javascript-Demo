@@ -13,14 +13,24 @@
         <div id="NW">
         	<p>Buffer Pool</p>
         	<div ng-controller="Controller2">
+                <button ng-click="commit()">Commit</button> 
                 <table> 
                     <tr ng-repeat="txn in Array | unique : 'pageid'">
                         <td><label>{{txn.pageid}}</label></td>
                     </tr>
                 </table>
-                <div>
-                    <button ng-click="commit()">Commit</button>   
-                </div>
+                <!-- <div>
+                    <button ng-click="commit()">Commit</button> 
+                     <table> 
+
+                    <tr ng-repeat="txn in dirtypage">
+                        <td><label>{{$index + 1}}</label></td>
+                        <td><label>{{txn.txn_no}}</label></td>
+                        <td><label>{{txn.txn_type}}</label></td>
+                        <td><label>{{txn.pageid}}</label></td>
+                    </tr>
+                </table>
+                </div> -->
                 <div id="display" style="padding:10px 0;">{{display}}</div>
             </div>
         </div>
@@ -119,15 +129,18 @@
         <div id="SE">
         <p>Transaction Log</p>
         	<div ng-controller="Controller2">
-                <table> 
-                    <tr ng-repeat="txn in dirtypage">
-                        <td><label>{{$index + 1}}</label></td>
-                        <td><label>{{txn.txn_no}}</label></td>
-                        <td><label>{{txn.txn_type}}</label></td>
-                        <td><label>{{txn.pageid}}</label></td>
-                        <td><input type="checkbox" ng-model="txn.Remove"/></td>
-                    </tr>
-                </table>
+                <!-- <div ng-click = "commit()"> -->
+                    <button ng-click="commit()">Commit</button> 
+                    <table ng-show="show"> 
+                        <tr ng-repeat="txn in dirtypage">
+                            <td><label>{{$index + 1}}</label></td>
+                            <td><label>{{txn.txn_no}}</label></td>
+                            <td><label>{{txn.txn_type}}</label></td>
+                            <td><label>{{txn.pageid}}</label></td>
+                        </tr>
+                    </table>
+                <button ng-click="flush()">Flush</button> 
+                <!-- </div> -->
 
                 <div id="display" style="padding:10px 0;">{{display}}</div>
             </div>

@@ -40,7 +40,7 @@ myApp.controller('Controller1', function($scope, sharedModels) {
 
         $scope.Array = sharedModels.Array;
         $scope.id_set = sharedModels.id_set;
-        $scope.dirtypage = sharedModels.DirtyPage;
+        // $scope.dirtypage = sharedModels.DirtyPage;
         // GET VALUES FROM INPUT BOXES AND ADD A NEW ROW TO THE TABLE.
         $scope.addRow = function () {
             if ($scope.txn_no != undefined && $scope.txn_type != undefined && $scope.pageid != undefined) {
@@ -52,7 +52,9 @@ myApp.controller('Controller1', function($scope, sharedModels) {
                 $scope.Array.push(txn);
                 // create a dirty page
                 if ($scope.txn_type=="w"){
-                    $scope.dirtypage.push(txn);
+                    sharedModels.DirtyPage.push(txn);
+                    // console.log(txn);
+                    // sharedModels.DirtyPage = $scope.dirtypage;
                 }
                 // $scope.id_set.add(txn.pageid);
 
@@ -60,10 +62,11 @@ myApp.controller('Controller1', function($scope, sharedModels) {
                 $scope.txn_no = null;
                 $scope.txn_type = null;
                 $scope.pageid = null;
+
             }
         };
 
-        sharedModels.DirtyPage = $scope.dirtypage;
+        
 
 
         // REMOVE SELECTED ROW(s) FROM TABLE.
@@ -91,11 +94,25 @@ myApp.controller('Controller2', function($scope, sharedModels) {
 
         $scope.Array = sharedModels.Array;
         $scope.id_set = sharedModels.id_set;
+        // $scope.dirtypage = sharedModels.DirtyPage;
+        $scope.dirtypage = []
+        $scope.show = false;
 
         $scope.commit = function () {
+            $scope.show = true;
             $scope.dirtypage = sharedModels.DirtyPage;
+            // console.log($scope.dirtypage);
+            // sharedModels.DirtyPage = [];
         };
-        sharedModels.DirtyPage = [];
+        // $scope.show = false;
+
+        
+        $scope.flush = function () {
+            $scope.show = false;
+            // $scope.dirtypage = sharedModels.DirtyPage;
+            // console.log($scope.dirtypage);
+            sharedModels.DirtyPage = [];
+        };
 
 });
 
@@ -105,6 +122,12 @@ myApp.controller('Controller2', function($scope, sharedModels) {
 //         // $scope.id_set = sharedModels.id_set;
 //         $scope.dirtypage = sharedModels.DirtyPage;
 //         // sharedModels.DirtyPage = [];
+//         $scope.flush = function () {
+//             $scope.show = false;
+//             $scope.dirtypage = sharedModels.DirtyPage;
+//             // console.log($scope.dirtypage);
+//             sharedModels.DirtyPage = [];
+//         };
 
 // });
 
