@@ -16,8 +16,9 @@
                 <button ng-click="commit_1()">Commit(Randomly Write)</button> 
                 <button ng-click="commit_2()">Write Ahead Log(Sequential Write)</button> 
                 <table ng-show="show_buffer"> 
-                    <tr ng-repeat="txn in buffer | unique : 'pageid'">
-                        <td><label>{{txn.pageid}}</label></td>
+                    <tr ng-repeat="txn in Array| unique : 'pageid'">
+                        <td ng-if="txn.txn_type == 'W'"><label>【{{txn.pageid}}】</label></td>
+                        <td ng-if="txn.txn_type == 'R'"><label>{{txn.pageid}}</label></td>
                     </tr>
                 </table>
             </div>
@@ -89,6 +90,11 @@
         	<p><strong>HardDisk Storage</strong></p>
 
                 <div>
+                    <table> 
+                        <tr ng-repeat="_list in AllRecords">
+                            <td ng-repeat="item in _list track by $index"><label>{{item}}</label></td>
+                        </tr>
+                    </table>
 
                 </div>
 

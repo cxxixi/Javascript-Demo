@@ -41,6 +41,12 @@ myApp.controller('Controller', function($scope, sharedModels) {
         $scope.dirtypage = []
         $scope.show_log = false;
         $scope.show_buffer = true;
+        $scope.count_in_disk = 4;
+        // $scope.AllRecords = [[1,2,"1"],['1','1','']];
+        $scope.AllRecords = [[1,2,"","",""],["","","",9,""],["","",13,"",""],["","","","",""]];
+        $scope.PageInDisk = new Set([1,2,9,13]);
+
+        $scope.capacity = 20;
         // $scope.dirtypage = sharedModels.DirtyPage;
         // GET VALUES FROM INPUT BOXES AND ADD A NEW ROW TO THE TABLE.
         $scope.addRow = function () {
@@ -57,10 +63,11 @@ myApp.controller('Controller', function($scope, sharedModels) {
                 txn.pageid = $scope.pageid;
 
 
+
                 $scope.Array.push(txn);
                 $scope.buffer.push(txn);
                 // create a dirty page
-                if ($scope.txn_type=="w"){
+                if ($scope.txn_type=="W"){
                     sharedModels.DirtyPage.push(txn);
                     // console.log(txn);
                     // sharedModels.DirtyPage = $scope.dirtypage;
@@ -99,12 +106,65 @@ myApp.controller('Controller', function($scope, sharedModels) {
             $scope.show_HardDisk = true;
             $scope.dirtypage = sharedModels.DirtyPage;
             $scope.show_buffer = false;
-            // console.log($scope.dirtypage);
+
+            // for (i=0; i<$scope.dirtypage.length; i++){
+            //     if $scope.PageInDisk.has()
+            // }
+            $scope.count_in_disk += $scope.dirtypage.length;
+            $scope.buffer = [];   
+            $scope.Array = [];
+            console.log($scope.count_in_disk);
             // sharedModels.DirtyPage = [];
+         
+            if ($scope.count_in_disk <= $scope.capacity){
+            //     //feasible
+                $scope.rest_idx = [];
+                for (k=0; k<$scope.capacity; k++){
+                    i = parseInt(k/5);
+                    j = k-5*i;
+                    if($scope.AllRecords[i][j]==""){
+                        $scope.rest_idx.push([i,j]);
+                    }
+                }
+                // console.log($scope.rest_idx);
+                var idx_list = new Set([]);
+                // console.log($scope.dirtypage.length);
+                while (idx_list.size<$scope.dirtypage.length){
+                // for (k = $scope.rest_idx.length; k--;){
+                    randomIndex = Math.floor(Math.random()*$scope.rest_idx.length);
+                    if(!idx_list.has(randomIndex)){
+                        idx_list.add(randomIndex)
+                    }
+
+                }
+                console.log($scope.dirtypage);
+                var iterator1 = idx_list.values();
+                for(k=0; k<$scope.dirtypage.length; k++){
+                    
+                    
+                    idx = iterator1.next().value;
+                    // console.log(idx);
+                    i = $scope.rest_idx[idx][0];
+                    // console.log(i);
+                    j = $scope.rest_idx[idx][1];
+
+
+                    $scope.AllRecords[i][j] = $scope.dirtypage[k].pageid;
+                }
+               
+                // var random = $scope.rest_idx.splice(Math.floor(Math.random() * (i + 1)), 1)[0];
+                // console.log(idx_list);
+                // for 
+                //
+            }
+            // sharedModels.DirtyPage = [];
+            // $scope.dirtypage = [];
         };
 
         $scope.flush = function () {
             $scope.show_log = false;
+            $scope.count_in_disk += $scope.dirtypage.size();
+
 
             // $scope.dirtypage = sharedModels.DirtyPage;
             // console.log($scope.dirtypage);
