@@ -1,11 +1,13 @@
-<html ng-app="NerdCtrl">
+<html ng-app="MyCtrl">
     <head>
         <link rel="stylesheet" href="../css/style.css">
-        <script src="../js/controllers/NerdCtrl.js"></script>
+        <script src="../js/controllers/MyCtrl.js"></script>
     </head>
     <body ng-controller="Controller">
         <div >
         	<h3>Basic Database Concepts</h3>
+            <button ng-click="select_1()">Commit(Randomly Write)</button> 
+            <button ng-click="select_2()">Write Ahead Log(Sequential Write)</button> 
         </div>
     <!-- #class="jumbotron text-center" -->
 
@@ -13,18 +15,18 @@
         <div id="NW">
         	<p><strong>Volatile Storage</strong></p>
                 <!-- <button ng-click="commit()">Commit</button>  -->
-                <button ng-click="commit_1()">Commit(Randomly Write)</button> 
-                <button ng-click="commit_2()">Write Ahead Log(Sequential Write)</button> 
+                
                 <table ng-show="show_buffer"> 
                     <tr ng-repeat="txn in Array| unique : 'pageid'">
-                        <td ng-if="txn.txn_type == 'W'"><label>【{{txn.pageid}}】</label></td>
-                        <td ng-if="txn.txn_type == 'R'"><label>{{txn.pageid}}</label></td>
+                        <td ng-if="txn.txn_type == 'Write'"><label>【{{txn.pageid}}】</label></td>
+                        <td ng-if="txn.txn_type == 'Read'"><label>{{txn.pageid}}</label></td>
                     </tr>
                 </table>
             </div>
         </div>
 
         <div id="SE">
+            
             <p><strong>Transaction Log</strong></p>
                 <!-- <div ng-click = "commit()"> -->
             
@@ -37,6 +39,7 @@
                 </tr>
             </table>
             <button ng-click="flush()">Flush</button> 
+            
                 <!-- </div> -->
 
                 <div id="display" style="padding:10px 0;">{{display}}</div>
@@ -50,9 +53,13 @@
                     <li>Transaction No</li>
                     <li><input type="text" ng-model="txn_no" /></li>
                 </ul>
+                
+
                 <ul>
                     <li>Operation Type</li>
-                    <li><input type="text" ng-model="txn_type" /></li>
+                    <li><select  ng-model="selectedType" ng-options="type for type in choices"">
+                        </select>
+                    </li>
                 </ul>
                 <ul>
                     <li>Page Id.</li>

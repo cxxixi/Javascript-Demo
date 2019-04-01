@@ -6,10 +6,10 @@ body { padding-top:0px;
 
 /*div { position:fixed;}*/
 #center{ top:0; }
-#NW { position:fixed; top:20%;   left:5; width:40%; height:40%}
-#NE { position:fixed;top:20%;   left:50%;width:40%; height:40% }
-#SW { position:fixed;top:60%; left:5; width:40%; height:40%}
-#SE { position:fixed;top:60%; left:50%;width:40%; height:40%}  
+#NW { position:fixed; top:30%;   left:5; width:40%; height:40%}
+#NE { position:fixed;top:30%;   left:55%;width:40%; height:40% }
+#SW { position:fixed;top:70%; left:5; width:40%; height:40%}
+#SE { position:fixed;top:70%; left:55%;width:40%; height:40%}  
 /*div{
     font:15px Verdana;
     width:900px;

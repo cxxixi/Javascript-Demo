@@ -8,8 +8,8 @@ angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', f
 			controller: 'MainController'
 		})
 
-		.when('/nerds', {
-			templateUrl: 'views/nerd.html',
+		.when('/db', {
+			templateUrl: 'views/db.html',
 			controller: 'Controller'
 		})
 
