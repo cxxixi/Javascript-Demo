@@ -6,31 +6,41 @@
     <body ng-controller="Controller">
         <div >
         	<h3>Basic Database Concepts</h3>
-            <button ng-click="select_1()">Commit(Randomly Write)</button> 
-            <button ng-click="select_2()">Write Ahead Log(Sequential Write)</button> 
+            <button ng-click="select_1()">Commit(Randomly Write)</button>
+            <button ng-click="select_2()">Write Ahead Log(Sequential Write)</button>
         </div>
     <!-- #class="jumbotron text-center" -->
 
 
         <div id="NW">
-        	<p><strong>Volatile Storage</strong></p>
-                <!-- <button ng-click="commit()">Commit</button>  -->
-                
-                <table ng-show="show_buffer"> 
-                    <tr ng-repeat="txn in Array| unique : 'pageid'">
-                        <td ng-if="txn.txn_type == 'Write'"><label>【{{txn.pageid}}】</label></td>
+            <h5>Checkpoint Information</h5>
+                <table ng-show="show_checkpoint">
+                    <th>Dirty Page Table</th>
+                    <tr style="display: inline-block;" ng-repeat="txn in Array| unique : 'pageid'">
+                        <td ng-if="txn.txn_type == 'Write'"><label>{{txn.pageid}}</label></td>
                         <td ng-if="txn.txn_type == 'Read'"><label>{{txn.pageid}}</label></td>
                     </tr>
+                    <th>Active Transaction Table</th>
+                    <tr style="display: inline-block;" ng-repeat="item in actArr">
+                        <td><label>{{item}}</label></td>
+                    </tr>
                 </table>
+
+            <!--<p><strong>Active Transaction Table</strong></p>
+                <table ng-show="show_checkpoint">
+                    <tr ng-repeat="item in actArr">
+                        <td><label>{{item}}</label></td>
+                    </tr>
+                </table> -->
             </div>
         </div>
 
         <div id="SE">
-            
+
             <p><strong>Transaction Log</strong></p>
                 <!-- <div ng-click = "commit()"> -->
-            
-            <table ng-show="show_log"> 
+
+            <table ng-show="show_log">
                 <tr ng-repeat="txn in dirtypage">
                     <td><label>{{$index + 1}}</label></td>
                     <td><label>{{txn.txn_no}}</label></td>
@@ -38,8 +48,8 @@
                     <td><label>{{txn.pageid}}</label></td>
                 </tr>
             </table>
-            <button ng-click="flush()">Flush</button> 
-            
+            <button ng-click="flush()">Flush</button>
+
                 <!-- </div> -->
 
                 <div id="display" style="padding:10px 0;">{{display}}</div>
@@ -48,39 +58,60 @@
 
 
         <div id="NE">
-        	<p><strong>Transaction Table</strong></p>
+        	<h5>Transaction Table</h5>
                 <ul>
-                    <li>Transaction No</li>
-                    <li><input type="text" ng-model="txn_no" /></li>
+                    <li>Transaction No.</li>
+                    <li>
+                        <button ng-click="txn_no = 1">1</button>
+                        <button ng-click="txn_no = 2">2</button>
+                        <button ng-click="txn_no = 3">3</button>
+                        <button ng-click="txn_no = 4">4</button>
+                    </li>
                 </ul>
-                
+
 
                 <ul>
                     <li>Operation Type</li>
-                    <li><select  ng-model="selectedType" ng-options="type for type in choices"">
-                        </select>
+                    <li>
+                        <button ng-click="selectedType = 'Write'">Write</button>
+                        <button ng-click="selectedType = 'Commit">Commit</button>
+                        <button ng-click="selectedType = 'Checkpoint'">Checkpoint</button>
+                        <button ng-click="selectedType = 'Abort'">Abort</button>
                     </li>
                 </ul>
                 <ul>
                     <li>Page Id.</li>
-                    <li><input type="text" ng-model="pageid" /></li>
+                    <li>
+                        <button ng-click="pageid = 1">1</button>
+                        <button ng-click="pageid = 2">2</button>
+                        <button ng-click="pageid = 3">3</button>
+                        <button ng-click="pageid = 4">4</button>
+                        <button ng-click="pageid = 5">5</button>
+                        <button ng-click="pageid = 6">6</button>
+                    </li>
                 </ul>
                 <ul>
                     <li> </li><li><button ng-click="addRow()"> Add Record </button></li>
                 </ul>
 
-                <table> 
+                <table>
                     <tr>
                         <th>No.</th>
-                            <th>Transaction No.</th>
-                                <th>Operation Type</th>
-                                <th>Page Id.</th>
+                        <th>prev LSN</th>
+                        <th>Transaction No.</th>
+                        <th>Operation Type</th>
+                        <th>Page Id.</th>
+                        <th>Log Entry</th>
+                        <th>Undo Next LSN</th>
                     </tr>
                     <tr ng-repeat="txn in Array">
                         <td><label>{{$index + 1}}</label></td>
+                        <td>---</td>
                         <td><label>{{txn.txn_no}}</label></td>
                         <td><label>{{txn.txn_type}}</label></td>
                         <td><label>{{txn.pageid}}</label></td>
+                        <td>{{txn.txn_type + " " + txn.pageid}}
+                        <td>---<td>
                         <td><input type="checkbox" ng-model="txn.Remove"/></td>
                     </tr>
                 </table>
@@ -97,7 +128,7 @@
         	<p><strong>HardDisk Storage</strong></p>
 
                 <div>
-                    <table> 
+                    <table>
                         <tr ng-repeat="_list in AllRecords">
                             <td ng-repeat="item in _list track by $index"><label>{{item}}</label></td>
                         </tr>
@@ -109,7 +140,7 @@
         </div>
 
 
-        
+
     </body>
 </html>
 

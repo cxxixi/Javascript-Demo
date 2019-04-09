@@ -1,4 +1,4 @@
-var myApp = angular.module('MyCtrl', [])
+var myApp = angular.module('ariesApp', [])
 
 myApp.service('sharedModels', [function () {
 
@@ -35,22 +35,20 @@ myApp.filter("unique", function() {
   };
 });
 
-myApp.controller('Controller', function($scope, sharedModels) {
+myApp.controller('ariesCtrl', function($scope, sharedModels) {
 
         $scope.Array = sharedModels.Array;
 
         $scope.dp_buffer = [];
         $scope.id_set = sharedModels.id_set;
-        $scope.choices = ['Write', 'Commit', 'Checkpoint', 'Abort'];
+        $scope.choices = ['Write','Read','Commit'];
         $scope.PagetoWrite = [];
         //default is randomly write
         $scope.write_mode = 1;
-        $scope.dirtypage = [];
+        $scope.dirtypage = []
         $scope.show_log = false;
         $scope.show_buffer = true;
         $scope.show_checkpoint = false;
-        $scope.actTrans = new Set([]); // active Transactions
-        $scope.actArr = [];
 
 
         $scope.count_in_disk = 4;
@@ -58,7 +56,6 @@ myApp.controller('Controller', function($scope, sharedModels) {
         $scope.PageInDisk = new Set(["1","2","9","13"]);
         // $scope.PageInDisk = sharedModels.PageInDisk;
         $scope.capacity = 20;
-
         // GET VALUES FROM INPUT BOXES AND ADD A NEW ROW TO THE TABLE.
         $scope.addRow = function () {
 
@@ -68,22 +65,15 @@ myApp.controller('Controller', function($scope, sharedModels) {
             }
             $scope.buffer = [];
             if ($scope.txn_no != undefined && $scope.selectedType != undefined && $scope.pageid != undefined) {
-                if(!$scope.actTrans.has($scope.txn_no)) {
-                    $scope.actTrans.add($scope.txn_no);
-                    var begTxn = [];
-                    begTxn.txn_no = $scope.txn_no;
-                    begTxn.txn_type = "Begin";
-                    $scope.Array.push(begTxn);
-                }
                 var txn = [];
                 txn.txn_no = $scope.txn_no;
                 txn.txn_type = $scope.selectedType;
                 txn.pageid = $scope.pageid;
                 $scope.dp_buffer = sharedModels.dp_buffer;
 
+
                 $scope.Array.push(txn);
                 $scope.buffer.push(txn);
-
                 // create a dirty page
                 if (txn.txn_type=="Write"){
                     $scope.dirtypage.push(txn);
@@ -98,15 +88,7 @@ myApp.controller('Controller', function($scope, sharedModels) {
                 $scope.pageid = null;
 
             }
-
-            if ($scope.selectedType == "Checkpoint"){
-                $scope.show_checkpoint = true;
-                $scope.actArr = Array.from($scope.actTrans);
-                $scope.selectedType = null;
-
-            }
-
-            if ($scope.txn_no != undefined && $scope.selectedType == "Commit"){
+            if ($scope.txn_no != undefined && $scope.selectedType == "Commit" && $scope.pageid == undefined){
 
                 var txn = [];
                 txn.txn_no = $scope.txn_no;
