@@ -51,6 +51,7 @@ myApp.controller('AriesController', function($scope, sharedModels) {
         $scope.show_checkpoint = false;
         $scope.actTrans = new Set([]); // active Transactions
         $scope.actArr = [];
+        $scope.lsnArr = ["0","0","0","0"] // initialize the LSN of the 4 transactions
 
 
         $scope.count_in_disk = 4;
@@ -61,6 +62,7 @@ myApp.controller('AriesController', function($scope, sharedModels) {
 
         // GET VALUES FROM INPUT BOXES AND ADD A NEW ROW TO THE TABLE.
         $scope.addRow = function () {
+            var ind;
 
             if (!$scope.show_buffer){
                 $scope.buffer = [];
@@ -79,7 +81,13 @@ myApp.controller('AriesController', function($scope, sharedModels) {
                 txn.txn_no = $scope.txn_no;
                 txn.txn_type = $scope.selectedType;
                 txn.pageid = $scope.pageid;
+
                 $scope.dp_buffer = sharedModels.dp_buffer;
+
+                //Find LSN of txn and add it to
+                ind = parseInt($scope.txn_no, 10) - 1;
+                txn.txn_LSN = $scope.lsnArr[ind];
+                $scope.lsnArr[ind] = ($scope.Array.length + 1).toString();
 
                 $scope.Array.push(txn);
                 $scope.buffer.push(txn);
@@ -100,13 +108,24 @@ myApp.controller('AriesController', function($scope, sharedModels) {
             }
 
             if ($scope.selectedType == "Checkpoint"){
+                var txn = [];
+                txn.txn_no = "---";
+                txn.txn_type = $scope.selectedType;
+                txn.pageid = "";
+                //$scope.dp_buffer = sharedModels.dp_buffer;
+
+                $scope.Array.push(txn);
+                $scope.buffer.push(txn);
+
                 $scope.show_checkpoint = true;
                 $scope.actArr = Array.from($scope.actTrans);
                 $scope.selectedType = null;
 
+
             }
 
             if ($scope.txn_no != undefined && $scope.selectedType == "Commit"){
+                //console.log("Committing");
 
                 var txn = [];
                 txn.txn_no = $scope.txn_no;
@@ -175,6 +194,8 @@ myApp.controller('AriesController', function($scope, sharedModels) {
                     // console.log(sharedModels.PageInDisk);
                     console.log($scope.PageInDisk);
                 }
+
+                $scope.actTrans.delete($scope.txn_no);
 
                 $scope.txn_no = null;
                 $scope.selectedType = null;

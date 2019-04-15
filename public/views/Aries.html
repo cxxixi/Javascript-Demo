@@ -20,7 +20,7 @@
         <script src="../js/controllers/AriesCtrl.js"></script>
     </head>
     <body ng-controller="Controller">
-        <div >
+        <div>
         	<h3>Basic Database Concepts</h3>
             <button ng-click="select_1()">Commit(Randomly Write)</button>
             <button ng-click="select_2()">Write Ahead Log(Sequential Write)</button>
@@ -51,26 +51,26 @@
             </div>
         </div>
 
-        <div id="SE">
+        <!-- <div id="SE"> -->
 
-            <p><strong>Transaction Log</strong></p>
+            <!-- <p><strong>Transaction Log</strong></p> -->
                 <!-- <div ng-click = "commit()"> -->
 
-            <table ng-show="show_log">
-                <tr ng-repeat="txn in dirtypage">
-                    <td><label>{{$index + 1}}</label></td>
-                    <td><label>{{txn.txn_no}}</label></td>
-                    <td><label>{{txn.txn_type}}</label></td>
-                    <td><label>{{txn.pageid}}</label></td>
-                </tr>
-            </table>
-            <button ng-click="flush()">Flush</button>
+            <!-- <table ng-show="show_log"> -->
+                <!-- <tr ng-repeat="txn in dirtypage"> -->
+                    <!-- <td><label>{{$index + 1}}</label></td> -->
+                    <!-- <td><label>{{txn.txn_no}}</label></td> -->
+                    <!-- <td><label>{{txn.txn_type}}</label></td> -->
+                    <!-- <td><label>{{txn.pageid}}</label></td> -->
+                <!-- </tr> -->
+            <!-- </table> -->
+            <!-- <button ng-click="flush()">Flush</button> -->
 
                 <!-- </div> -->
 
-                <div id="display" style="padding:10px 0;">{{display}}</div>
-            </div>
-        </div>
+                <!-- <div id="display" style="padding:10px 0;">{{display}}</div> -->
+            <!-- </div> -->
+        <!-- </div> -->
 
 
         <div id="NE">
@@ -93,6 +93,7 @@
                         <button ng-click="selectedType = 'Commit">Commit</button>
                         <button ng-click="selectedType = 'Checkpoint'">Checkpoint</button>
                         <button ng-click="selectedType = 'Abort'">Abort</button>
+                        <button ng-click="selectedType = 'Crash'">Crash</button>
                     </li>
                 </ul>
                 <ul>
@@ -109,29 +110,29 @@
                 <ul>
                     <li> </li><li><button ng-click="addRow()"> Add Record </button></li>
                 </ul>
-
-                <table>
-                    <tr>
-                        <th>No.</th>
-                        <th>prev LSN</th>
-                        <th>Transaction No.</th>
-                        <th>Operation Type</th>
-                        <th>Page Id.</th>
-                        <th>Log Entry</th>
-                        <th>Undo Next LSN</th>
-                    </tr>
-                    <tr ng-repeat="txn in Array">
-                        <td><label>{{$index + 1}}</label></td>
-                        <td>---</td>
-                        <td><label>{{txn.txn_no}}</label></td>
-                        <td><label>{{txn.txn_type}}</label></td>
-                        <td><label>{{txn.pageid}}</label></td>
-                        <td>{{txn.txn_type + " " + txn.pageid}}
-                        <td>---<td>
-                        <td><input type="checkbox" ng-model="txn.Remove"/></td>
-                    </tr>
-                </table>
-
+                <div style="overflow-y: auto;">
+                    <table>
+                        <tr>
+                            <th>No.</th>
+                            <th>prev LSN</th>
+                            <th>Transaction No.</th>
+                            <th>Operation Type</th>
+                            <th>Page Id.</th>
+                            <th>Log Entry</th>
+                            <th>Undo Next LSN</th>
+                        </tr>
+                        <tr ng-repeat="txn in Array">
+                            <td><label>{{$index + 1}}</label></td>
+                            <td>{{txn.txn_LSN}}</td>
+                            <td><label>{{txn.txn_no}}</label></td>
+                            <td><label>{{txn.txn_type}}</label></td>
+                            <td><label>{{txn.pageid}}</label></td>
+                            <td>{{txn.txn_type + " " + txn.pageid}}</td>
+                            <td>---</td>
+                            <td><input type="checkbox" ng-model="txn.Remove"/></td>
+                        </tr>
+                    </table>
+                </div>
                 <div>
                     <button ng-click="removeRow()">Remove Record</button>
                 </div>
