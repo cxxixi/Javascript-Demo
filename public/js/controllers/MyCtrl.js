@@ -42,6 +42,12 @@ myApp.controller('Controller', function($scope, sharedModels) {
         $scope.dp_buffer = [];
         $scope.id_set = sharedModels.id_set;
         $scope.choices = ['Write','Read','Commit'];
+        var range = [];
+        for(var i = 1; i <= 20; i++) {
+          range.push(i);
+        }
+        $scope.txn_nos = range;
+        $scope.pageids = range;
         $scope.PagetoWrite = [];
         //default is randomly write
         $scope.write_mode = 1;
@@ -85,7 +91,7 @@ myApp.controller('Controller', function($scope, sharedModels) {
                 $scope.txn_no = null;
                 $scope.selectedType = null;
                 $scope.pageid = null;
-    
+
             }
             if ($scope.txn_no != undefined && $scope.selectedType == "Commit" && $scope.pageid == undefined){
 
@@ -95,10 +101,10 @@ myApp.controller('Controller', function($scope, sharedModels) {
                 txn.pageid = "";
                 $scope.Array.push(txn);
                 $scope.dp_buffer = sharedModels.dp_buffer;
-               
+
                 //case 1: write method: randomly write
                 if($scope.write_mode == 1){
-                    
+
                     // console.log($scope.dp_buffer,"dp_buffer");
 
                     $scope.PagetoWrite = [];
@@ -119,7 +125,7 @@ myApp.controller('Controller', function($scope, sharedModels) {
                     console.log($scope.PagetoWrite);
                     $scope.dp_buffer = temp;
                     $scope.count_in_disk += $scope.PagetoWrite.length;
-                 
+
                     if ($scope.count_in_disk <= $scope.capacity){
                     //     //feasible
                         $scope.rest_idx = [];
@@ -142,7 +148,7 @@ myApp.controller('Controller', function($scope, sharedModels) {
                         // console.log($scope.dirtypage);
                         var iterator1 = idx_list.values();
                         for(k=0; k<$scope.PagetoWrite.length; k++){
-                            
+
                             idx = iterator1.next().value;
                             i = $scope.rest_idx[idx][0];
                             j = $scope.rest_idx[idx][1];
@@ -193,7 +199,7 @@ myApp.controller('Controller', function($scope, sharedModels) {
                          $scope.PageInDisk.add($scope.dirtypage[i].pageid)
                 }
             }
-                 
+
             $scope.count_in_disk += $scope.PagetoWrite.length;
 
             if ($scope.count_in_disk <= $scope.capacity){
@@ -208,7 +214,7 @@ myApp.controller('Controller', function($scope, sharedModels) {
                 }
 
                 for(k=0; k<$scope.PagetoWrite.length; k++){
-                    
+
                     // idx = iterator1.next().value;
                     i = $scope.rest_idx[k][0];
                     j = $scope.rest_idx[k][1];
@@ -224,7 +230,7 @@ myApp.controller('Controller', function($scope, sharedModels) {
         }
 
 
-                    
+
             // $scope.count_in_disk += $scope.dirtypage.size();
 
 
@@ -232,11 +238,3 @@ myApp.controller('Controller', function($scope, sharedModels) {
             // console.log($scope.dirtypage);
             // sharedModels.DirtyPage = [];
 });
-
-
-
-
-
-
-
-
