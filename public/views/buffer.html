@@ -1,0 +1,59 @@
+ <html ng-app="BufCtrl">
+    <head>
+        <link rel="stylesheet" href="../css/style.css">
+        <script src="../js/controllers/BufCtrl.js"></script>
+    </head>
+    <body ng-controller="BufController">
+        <div >
+        	<h3>Basic Database Concepts</h3>
+        </div>
+
+        <!-- <div id="NE">
+            <h5>Checkpoint Information</h5>
+                <table ng-show="show_checkpoint">
+                    <th>Dirty Page Table</th>
+                    <tr style="display: inline-block;" ng-repeat="txn in Array| unique : 'pageid'">
+                        <td ng-if="txn.txn_type == 'Write'"><label>{{txn.pageid}}</label></td>
+                        <td ng-if="txn.txn_type == 'Read'"><label>{{txn.pageid}}</label></td>
+                    </tr>
+                    <th>Active Transaction Table</th>
+                    <tr style="display: inline-block;" ng-repeat="item in actArr">
+                        <td><label>{{item}}</label></td>
+                    </tr>
+                </table>
+
+            </div>
+        </div>
+
+       
+        <div id="NW">
+        	<h5>Transaction Table</h5>
+
+                <table>
+                    <tr>
+                        <th>No.</th>
+                        <th>prev LSN</th>
+                        <th>Transaction No.</th>
+                        <th>Operation Type</th>
+                        <th>Page Id.</th>
+                        <th>Log Entry</th>
+                        <th>Undo Next LSN</th>
+                    </tr>
+                    <tr ng-repeat="txn in Array">
+                        <td><label>{{$index + 1}}</label></td>
+                        <td>---</td>
+                        <td><label>{{txn.txn_no}}</label></td>
+                        <td><label>{{txn.txn_type}}</label></td>
+                        <td><label>{{txn.pageid}}</label></td>
+                        <td>{{txn.txn_type + " " + txn.pageid}}
+                        <td>---<td>
+                    </tr>
+                </table>
+
+                <div id="display" style="padding:10px 0;">{{display}}</div>
+        </div> -->
+
+    </body>
+</html>
+
+
