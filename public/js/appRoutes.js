@@ -13,11 +13,15 @@ angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', f
 			controller: 'Controller'
 		})
 
-		.when('/aries', {
-			templateUrl: 'views/Aries.html',
-			controller: 'AriesController'	
-		});
+		.when('/logging', {
+			templateUrl: 'views/logging.html',
+			controller: 'LogController'	
+		})
 
+		.when('/recovery', {
+			templateUrl: 'views/recovery.html',
+			controller: 'RecController'	
+		});
 	$locationProvider.html5Mode(true);
 
 }]);

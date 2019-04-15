@@ -14,16 +14,16 @@
 </div>
  -->
 
- <html ng-app="AriesCtrl">
+ <html ng-app="LogCtrl">
     <head>
         <link rel="stylesheet" href="../css/style.css">
-        <script src="../js/controllers/AriesCtrl.js"></script>
+        <script src="../js/controllers/LogCtrl.js"></script>
     </head>
-    <body ng-controller="Controller">
+    <body ng-controller="LogController">
         <div >
         	<h3>Basic Database Concepts</h3>
-            <button ng-click="select_1()">Commit(Randomly Write)</button>
-            <button ng-click="select_2()">Write Ahead Log(Sequential Write)</button>
+            <!-- <button ng-click="select_1()">Commit(Randomly Write)</button> -->
+            <!-- <button ng-click="select_2()">Write Ahead Log(Sequential Write)</button> -->
         </div>
     <!-- #class="jumbotron text-center" -->
 
@@ -51,10 +51,9 @@
             </div>
         </div>
 
-        <div id="SE">
+<!--         <div id="SE">
 
             <p><strong>Transaction Log</strong></p>
-                <!-- <div ng-click = "commit()"> -->
 
             <table ng-show="show_log">
                 <tr ng-repeat="txn in dirtypage">
@@ -66,11 +65,10 @@
             </table>
             <button ng-click="flush()">Flush</button>
 
-                <!-- </div> -->
 
                 <div id="display" style="padding:10px 0;">{{display}}</div>
             </div>
-        </div>
+        </div> -->
 
 
         <div id="NE">
@@ -90,7 +88,7 @@
                     <li>Operation Type</li>
                     <li>
                         <button ng-click="selectedType = 'Write'">Write</button>
-                        <button ng-click="selectedType = 'Commit">Commit</button>
+                        <button ng-click="selectedType = 'Commit'">Commit</button>
                         <button ng-click="selectedType = 'Checkpoint'">Checkpoint</button>
                         <button ng-click="selectedType = 'Abort'">Abort</button>
                     </li>
@@ -140,7 +138,7 @@
         </div>
 
 
-        <div id="SW">
+        <!-- <div id="SW">
         	<p><strong>HardDisk Storage</strong></p>
 
                 <div>
@@ -155,7 +153,7 @@
                 <div id="display" style="padding:10px 0;">{{display}}</div>
         </div>
 
-
+ -->
 
     </body>
 </html>
