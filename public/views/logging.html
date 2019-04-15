@@ -1,11 +1,11 @@
 <!-- <div class="jumbotron text-center">
-	<h1>Algorithm 2</h1>
+    <h1>Algorithm 2</h1>
 
 
-	<select  ng-model="selectedName" ng-options="x as x.label disable when x.disabled for x in names">
-	</select>
+    <select  ng-model="selectedName" ng-options="x as x.label disable when x.disabled for x in names">
+    </select>
 
-	<button  ng-click="addNewChoice(selectedName)">Add node</button>
+    <button  ng-click="addNewChoice(selectedName)">Add node</button>
   <div data-ng-repeat="choice in choicesA">
     <input type="text" disabled ng-model="choice.name" name="" placeholder={{choice.id}}>
 
@@ -19,14 +19,9 @@
         <link rel="stylesheet" href="../css/style.css">
         <script src="../js/controllers/LogCtrl.js"></script>
     </head>
-<<<<<<< HEAD:public/views/Aries.html
-    <body ng-controller="Controller">
-        <div>
-=======
     <body ng-controller="LogController">
         <div >
->>>>>>> 8f5ce8eb8622fa9edd025661600595f123fc5214:public/views/logging.html
-        	<h3>Basic Database Concepts</h3>
+            <h3>Basic Database Concepts</h3>
             <!-- <button ng-click="select_1()">Commit(Randomly Write)</button> -->
             <!-- <button ng-click="select_2()">Write Ahead Log(Sequential Write)</button> -->
         </div>
@@ -56,41 +51,28 @@
             </div>
         </div>
 
-<<<<<<< HEAD:public/views/Aries.html
-        <!-- <div id="SE"> -->
-
-            <!-- <p><strong>Transaction Log</strong></p> -->
-                <!-- <div ng-click = "commit()"> -->
-=======
 <!--         <div id="SE">
 
             <p><strong>Transaction Log</strong></p>
->>>>>>> 8f5ce8eb8622fa9edd025661600595f123fc5214:public/views/logging.html
 
-            <!-- <table ng-show="show_log"> -->
-                <!-- <tr ng-repeat="txn in dirtypage"> -->
-                    <!-- <td><label>{{$index + 1}}</label></td> -->
-                    <!-- <td><label>{{txn.txn_no}}</label></td> -->
-                    <!-- <td><label>{{txn.txn_type}}</label></td> -->
-                    <!-- <td><label>{{txn.pageid}}</label></td> -->
-                <!-- </tr> -->
-            <!-- </table> -->
-            <!-- <button ng-click="flush()">Flush</button> -->
+            <table ng-show="show_log">
+                <tr ng-repeat="txn in dirtypage">
+                    <td><label>{{$index + 1}}</label></td>
+                    <td><label>{{txn.txn_no}}</label></td>
+                    <td><label>{{txn.txn_type}}</label></td>
+                    <td><label>{{txn.pageid}}</label></td>
+                </tr>
+            </table>
+            <button ng-click="flush()">Flush</button>
 
 
-<<<<<<< HEAD:public/views/Aries.html
-                <!-- <div id="display" style="padding:10px 0;">{{display}}</div> -->
-            <!-- </div> -->
-        <!-- </div> -->
-=======
                 <div id="display" style="padding:10px 0;">{{display}}</div>
             </div>
         </div> -->
->>>>>>> 8f5ce8eb8622fa9edd025661600595f123fc5214:public/views/logging.html
 
 
         <div id="NE">
-        	<h5>Transaction Table</h5>
+            <h5>Transaction Table</h5>
                 <ul>
                     <li>Transaction No.</li>
                     <li>
@@ -109,7 +91,6 @@
                         <button ng-click="selectedType = 'Commit'">Commit</button>
                         <button ng-click="selectedType = 'Checkpoint'">Checkpoint</button>
                         <button ng-click="selectedType = 'Abort'">Abort</button>
-                        <button ng-click="selectedType = 'Crash'">Crash</button>
                     </li>
                 </ul>
                 <ul>
@@ -124,31 +105,31 @@
                     </li>
                 </ul>
                 <ul>
-                    <li> </li><li><button ng-click="addRow()"> Add Record </button></li>
+                    <li> </li><li><button ng-click="addRow()"> Add Record </button></li>
                 </ul>
-                <div style="overflow-y: auto;">
-                    <table>
-                        <tr>
-                            <th>No.</th>
-                            <th>prev LSN</th>
-                            <th>Transaction No.</th>
-                            <th>Operation Type</th>
-                            <th>Page Id.</th>
-                            <th>Log Entry</th>
-                            <th>Undo Next LSN</th>
-                        </tr>
-                        <tr ng-repeat="txn in Array">
-                            <td><label>{{$index + 1}}</label></td>
-                            <td>{{txn.txn_LSN}}</td>
-                            <td><label>{{txn.txn_no}}</label></td>
-                            <td><label>{{txn.txn_type}}</label></td>
-                            <td><label>{{txn.pageid}}</label></td>
-                            <td>{{txn.txn_type + " " + txn.pageid}}</td>
-                            <td>---</td>
-                            <td><input type="checkbox" ng-model="txn.Remove"/></td>
-                        </tr>
-                    </table>
-                </div>
+
+                <table>
+                    <tr>
+                        <th>No.</th>
+                        <th>prev LSN</th>
+                        <th>Transaction No.</th>
+                        <th>Operation Type</th>
+                        <th>Page Id.</th>
+                        <th>Log Entry</th>
+                        <th>Undo Next LSN</th>
+                    </tr>
+                    <tr ng-repeat="txn in Array">
+                        <td><label>{{$index + 1}}</label></td>
+                        <td>---</td>
+                        <td><label>{{txn.txn_no}}</label></td>
+                        <td><label>{{txn.txn_type}}</label></td>
+                        <td><label>{{txn.pageid}}</label></td>
+                        <td>{{txn.txn_type + " " + txn.pageid}}
+                        <td>---<td>
+                        <td><input type="checkbox" ng-model="txn.Remove"/></td>
+                    </tr>
+                </table>
+
                 <div>
                     <button ng-click="removeRow()">Remove Record</button>
                 </div>
@@ -158,7 +139,7 @@
 
 
         <!-- <div id="SW">
-        	<p><strong>HardDisk Storage</strong></p>
+            <p><strong>HardDisk Storage</strong></p>
 
                 <div>
                     <table>
@@ -176,5 +157,4 @@
 
     </body>
 </html>
-
 
