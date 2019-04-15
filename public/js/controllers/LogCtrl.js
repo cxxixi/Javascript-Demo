@@ -1,4 +1,4 @@
-var myApp = angular.module('AriesCtrl', [])
+var myApp = angular.module('LogCtrl', [])
 
 myApp.service('sharedModels', [function () {
 
@@ -35,7 +35,7 @@ myApp.filter("unique", function() {
   };
 });
 
-myApp.controller('AriesController', function($scope, sharedModels) {
+myApp.controller('LogController', function($scope, sharedModels) {
 
         $scope.Array = sharedModels.Array;
 

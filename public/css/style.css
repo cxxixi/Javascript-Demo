@@ -1,15 +1,25 @@
-body { padding-top:0px; 
-    font:10px Verdana;
-    width:100%;
+:root {
+    --color-background: #EFF0F2;
+    --color-title: #23B5D3;
 }
 
+body {
+    background-color: var(--color-background) !important;
+    padding-top:0px;
+    width: 100%;
+}
+h2.jumbotron {
+    margin-bottom: 0em;
+    color: var(--color-title);
+    background-color: white;
+}
 
-/*div { position:fixed;}*/
-#center{ top:0; }
+/* div { position:fixed;} */
+/* #center{ top:0; }
 #NW { position:fixed; top:30%;   left:5; width:40%; height:40%}
 #NE { position:fixed;top:30%;   left:55%;width:40%; height:40% }
 #SW { position:fixed;top:70%; left:5; width:40%; height:40%}
-#SE { position:fixed;top:70%; left:55%;width:40%; height:40%}  
+#SE { position:fixed;top:70%; left:55%;width:40%; height:40%}   */
 /*div{
     font:15px Verdana;
     width:900px;
@@ -20,34 +30,99 @@ body { padding-top:0px;
 height:10px;
 width:10px;
 }*/
-
+h5 {
+    color: var(--color-title);
+}
 ul {
     padding:0;
-    margin:2px 5px; 
-    list-style:none; 
-    border:0; 
-    float:left; 
+    /* margin:2px 5px; */
+    list-style:none;
+    border:0;
+    float:left;
     width:100%;
 }
 li {
-    width:50%; 
-    float:left; 
-    display:inline-block; 
+    width:50%;
+    float:left;
+    display:inline-block;
 }
-table, input {
+select {
+    width: 75%;
+}
+table {
     text-align:center;
-    font:10px Verdana;
+    font-size: 12px;
+    border-style: solid;
+    border-width: 2px;
+    border-color: black;
 }
-table, td, th 
-{
-    margin:10px 0;
-    padding:2px 10px;
+th, tr{
+    border-style: solid;
+    border-width: 2px;
+    border-color: black;
 }
-td, th {
-    border:solid 1px #CCC;
+.table th.square {
+    padding: 0.5em;
+    border-style: solid;
+    border-width: 2px;
+    border-color: black;
 }
-button {
-    font:10px Verdana;
-    padding:3px 5px;
+.table td.square {
+    padding: 0.25em;
+    border-style: solid;
+    border-width: 2px;
+    border-color: black;
 }
-
+.table td.hd-storage {
+    /* padding: 0.5em; */
+    width: auto;
+    height: auto;
+    border-style: solid;
+    border-width: 2px;
+    border-color: black;
+}
+button.btn {
+    background-color: var(--color-title);
+    margin: 0.5em;
+}
+button.btn-select {
+    width: 50%;
+}
+button.reset-btn {
+    background-color: red;
+    margin-top: 0px;
+}
+div.row {
+    width: 100%
+}
+div.sect {
+    border-style: solid;
+    border-color: var(--color-title);
+    padding: 0.25em;
+    margin-bottom: 0.5em;
+    height: 35vh;
+    background-color: white;
+}
+div.col {
+    margin-bottom: 0.5em;
+    padding: 0.3em;
+}
+table.table {
+    width: 100%;
+    height: auto;
+    margin: auto;
+}
+div.vt {
+    height: 25vh;
+    overflow: scroll;
+}
+.first_title {
+    padding-top:0.5em;
+    padding-left: 0.5em;
+}
+select {
+    background-color: inherit;
+}
+label {
+    margin: 0;
+}
