@@ -126,3 +126,29 @@ select {
 label {
     margin: 0;
 }
+
+
+
+.analog-clock{
+    width:140px;
+    height:140px;
+}
+
+#clock-face{
+    stroke:black;
+    stroke-width:2px;
+    fill:white;
+}
+
+#m-hand{
+    stroke:black;
+    stroke-linecap:round;
+}
+
+#m-hand{
+    stroke-width:2px;
+}
+
+.time-text{
+    text-align:center;
+}

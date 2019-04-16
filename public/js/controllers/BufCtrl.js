@@ -37,233 +37,290 @@ myApp.filter("unique", function() {
 
 myApp.controller('BufController', function($scope, sharedModels) {
 
-    //     $scope.Array = sharedModels.Array;
+        $scope.Array = sharedModels.Array;
 
-    //     $scope.dp_buffer = [];
-    //     $scope.id_set = sharedModels.id_set;
-    //     $scope.choices = ['Write', 'Commit', 'Checkpoint', 'Abort'];
-    //     $scope.PagetoWrite = [];
-    //     //default is randomly write
-    //     $scope.write_mode = 1;
-    //     $scope.dirtypage = [];
-    //     $scope.show_log = false;
-    //     $scope.show_buffer = true;
-    //     $scope.show_checkpoint = false;
-    //     $scope.actTrans = new Set([]); // active Transactions
-    //     $scope.actArr = [];
-    //     $scope.lsnArr = ["0","0","0","0"] // initialize the LSN of the 4 transactions
-
-
-    //     $scope.count_in_disk = 4;
-    //     $scope.AllRecords = [["1","2","","",""],["","","","9",""],["","","13","",""],["","","","",""]];
-    //     $scope.PageInDisk = new Set(["1","2","9","13"]);
-    //     // $scope.PageInDisk = sharedModels.PageInDisk;
-    //     $scope.capacity = 20;
-
-    //     // GET VALUES FROM INPUT BOXES AND ADD A NEW ROW TO THE TABLE.
-    //     $scope.addRow = function () {
-    //         var ind;
-
-    //         if (!$scope.show_buffer){
-    //             $scope.buffer = [];
-    //             $scope.show_buffer = true;
-    //         }
-    //         $scope.buffer = [];
-    //         if ($scope.txn_no != undefined && $scope.selectedType != undefined && $scope.pageid != undefined) {
-    //             if(!$scope.actTrans.has($scope.txn_no)) {
-    //                 $scope.actTrans.add($scope.txn_no);
-    //                 var begTxn = [];
-    //                 begTxn.txn_no = $scope.txn_no;
-    //                 begTxn.txn_type = "Begin";
-    //                 $scope.Array.push(begTxn);
-    //             }
-    //             var txn = [];
-    //             txn.txn_no = $scope.txn_no;
-    //             txn.txn_type = $scope.selectedType;
-    //             txn.pageid = $scope.pageid;
-
-    //             $scope.dp_buffer = sharedModels.dp_buffer;
-
-    //             //Find LSN of txn and add it to
-    //             ind = parseInt($scope.txn_no, 10) - 1;
-    //             txn.txn_LSN = $scope.lsnArr[ind];
-    //             $scope.lsnArr[ind] = ($scope.Array.length + 1).toString();
-
-    //             $scope.Array.push(txn);
-    //             $scope.buffer.push(txn);
-
-    //             // create a dirty page
-    //             if (txn.txn_type=="Write"){
-    //                 $scope.dirtypage.push(txn);
-    //                 sharedModels.DirtyPage.push(txn);
-    //                 sharedModels.dp_buffer.push(txn);
-    //                 // console.log(sharedModels.dp_buffer);
-    //             }
-
-    //             // CLEAR TEXTBOX.
-    //             $scope.txn_no = null;
-    //             $scope.selectedType = null;
-    //             $scope.pageid = null;
-
-    //         }
-
-    //         if ($scope.selectedType == "Checkpoint"){
-    //             var txn = [];
-    //             txn.txn_no = "---";
-    //             txn.txn_type = $scope.selectedType;
-    //             txn.pageid = "";
-    //             //$scope.dp_buffer = sharedModels.dp_buffer;
-
-    //             $scope.Array.push(txn);
-    //             $scope.buffer.push(txn);
-
-    //             $scope.show_checkpoint = true;
-    //             $scope.actArr = Array.from($scope.actTrans);
-    //             $scope.selectedType = null;
+        $scope.dp_buffer = [];
+        $scope.id_set = sharedModels.id_set;
+        $scope.choices = ['Write', 'Commit', 'Checkpoint', 'Abort'];
+        $scope.PagetoWrite = [];
+        //default is randomly write
+        $scope.write_mode = 1;
+        $scope.dirtypage = [];
+        $scope.show_log = false;
+        $scope.show_buffer = true;
+        $scope.show_checkpoint = false;
+        $scope.actTrans = new Set([]); // active Transactions
+        $scope.actArr = [];
+        $scope.lsnArr = ["0","0","0","0"] // initialize the LSN of the 4 transactions
 
 
-    //         }
+        $scope.count_in_disk = 4;
+        $scope.AllRecords = [["1","2","","",""],["","","","9",""],["","","13","",""],["","","","",""]];
+        $scope.PageInDisk = new Set(["1","2","9","13"]);
+        // $scope.PageInDisk = sharedModels.PageInDisk;
+        $scope.capacity = 20;
 
-    //         if ($scope.txn_no != undefined && $scope.selectedType == "Commit"){
-    //             //console.log("Committing");
+        // GET VALUES FROM INPUT BOXES AND ADD A NEW ROW TO THE TABLE.
+        $scope.addRow = function () {
+            var ind;
 
-    //             var txn = [];
-    //             txn.txn_no = $scope.txn_no;
-    //             txn.txn_type = $scope.selectedType;
-    //             txn.pageid = "";
-    //             $scope.Array.push(txn);
-    //             $scope.dp_buffer = sharedModels.dp_buffer;
+            if (!$scope.show_buffer){
+                $scope.buffer = [];
+                $scope.show_buffer = true;
+            }
+            $scope.buffer = [];
+            if ($scope.write_no != undefined && $scope.selectedType != undefined && $scope.pageid != undefined) {
+                if(!$scope.actTrans.has($scope.write_no)) {
+                    $scope.actTrans.add($scope.write_no);
+                    var begTxn = [];
+                    begTxn.write_no = $scope.write_no;
+                    begTxn.txn_type = "Begin";
+                    $scope.Array.push(begTxn);
+                }
+                var txn = [];
+                txn.write_no = $scope.write_no;
+                txn.txn_type = $scope.selectedType;
+                txn.pageid = $scope.pageid;
 
-    //             //case 1: write method: randomly write
-    //             if($scope.write_mode == 1){
+                $scope.dp_buffer = sharedModels.dp_buffer;
 
-    //                 // console.log($scope.dp_buffer,"dp_buffer");
+                //Find LSN of txn and add it to
+                ind = parseInt($scope.write_no, 10) - 1;
+                txn.txn_LSN = $scope.lsnArr[ind];
+                $scope.lsnArr[ind] = ($scope.Array.length + 1).toString();
 
-    //                 $scope.PagetoWrite = [];
-    //                 temp = [];
-    //                 for (i=0; i<sharedModels.dp_buffer.length; i++){
+                $scope.Array.push(txn);
+                $scope.buffer.push(txn);
 
-    //                     if($scope.dp_buffer[i].txn_no != $scope.txn_no){
-    //                         temp.push($scope.dp_buffer[i]);
-    //                     }
-    //                     else{
-    //                         console.log($scope.dp_buffer[i].pageid,"pageid");
-    //                         if (!$scope.PageInDisk.has($scope.dp_buffer[i].pageid)){
-    //                              $scope.PagetoWrite.push($scope.dp_buffer[i]);
-    //                              $scope.PageInDisk.add($scope.dp_buffer[i].pageid)
-    //                         }
-    //                     }
-    //                 }
-    //                 console.log($scope.PagetoWrite);
-    //                 $scope.dp_buffer = temp;
-    //                 $scope.count_in_disk += $scope.PagetoWrite.length;
+                // create a dirty page
+                if (txn.txn_type=="Write"){
+                    $scope.dirtypage.push(txn);
+                    sharedModels.DirtyPage.push(txn);
+                    sharedModels.dp_buffer.push(txn);
+                    // console.log(sharedModels.dp_buffer);
+                }
 
-    //                 if ($scope.count_in_disk <= $scope.capacity){
-    //                 //     //feasible
-    //                     $scope.rest_idx = [];
-    //                     for (k=0; k<$scope.capacity; k++){
-    //                         i = parseInt(k/5);
-    //                         j = k-5*i;
-    //                         if($scope.AllRecords[i][j]==""){
-    //                             $scope.rest_idx.push([i,j]);
-    //                         }
-    //                     }
-    //                     var idx_list = new Set([]);
-    //                     // console.log($scope.dirtypage.length);
-    //                     while (idx_list.size<$scope.PagetoWrite.length){
-    //                     // for (k = $scope.rest_idx.length; k--;){
-    //                         randomIndex = Math.floor(Math.random()*$scope.rest_idx.length);
-    //                         if(!idx_list.has(randomIndex)){
-    //                             idx_list.add(randomIndex)
-    //                         }
-    //                     }
-    //                     // console.log($scope.dirtypage);
-    //                     var iterator1 = idx_list.values();
-    //                     for(k=0; k<$scope.PagetoWrite.length; k++){
+                // CLEAR TEXTBOX.
+                $scope.write_no = null;
+                $scope.selectedType = null;
+                $scope.pageid = null;
 
-    //                         idx = iterator1.next().value;
-    //                         i = $scope.rest_idx[idx][0];
-    //                         j = $scope.rest_idx[idx][1];
+            }
 
-    //                         $scope.AllRecords[i][j] = $scope.PagetoWrite[k].pageid;
-    //                         console.log($scope.PagetoWrite[k]);
-    //                     }
-    //                     console.log($scope.AllRecords);
-    //                 }
-    //                 sharedModels.PageInDisk = $scope.PageInDisk;
-    //                 // console.log(sharedModels.PageInDisk);
-    //                 console.log($scope.PageInDisk);
-    //             }
+            if ($scope.selectedType == "Checkpoint"){
+                var txn = [];
+                txn.write_no = "---";
+                txn.txn_type = $scope.selectedType;
+                txn.pageid = "";
+                //$scope.dp_buffer = sharedModels.dp_buffer;
 
-    //             $scope.actTrans.delete($scope.txn_no);
+                $scope.Array.push(txn);
+                $scope.buffer.push(txn);
 
-    //             $scope.txn_no = null;
-    //             $scope.selectedType = null;
+                $scope.show_checkpoint = true;
+                $scope.actArr = Array.from($scope.actTrans);
+                $scope.selectedType = null;
 
-    //         }
 
-    // }
-    //     // REMOVE SELECTED ROW(s) FROM TABLE.
-    //     $scope.removeRow = function () {
-    //         var arrTxn = [];
-    //         angular.forEach($scope.Array, function (value) {
-    //             if (!value.Remove) {
-    //                 arrTxn.push(value);
-    //             }
-    //         });
-    //         $scope.Array = arrTxn;
-    //     };
+            }
 
-    //     $scope.select_1 = function () {
-    //         $scope.write_mode = 1;
-    //     }
+            if ($scope.write_no != undefined && $scope.selectedType == "Commit"){
+                //console.log("Committing");
 
-    //     $scope.select_2 = function () {
-    //         $scope.write_mode = 2;
-    //         $scope.show_log = true;
-    //     }
+                var txn = [];
+                txn.write_no = $scope.write_no;
+                txn.txn_type = $scope.selectedType;
+                txn.pageid = "";
+                $scope.Array.push(txn);
+                $scope.dp_buffer = sharedModels.dp_buffer;
 
-    //     $scope.flush = function () {
-    //         console.log($scope.show_log);
-    //         $scope.show_log = false;
-    //         $scope.PagetoWrite = [];
-    //         for (i=0; i<$scope.dirtypage.length; i++){
-    //             if (!$scope.PageInDisk.has($scope.dirtypage[i].pageid)){
-    //                      $scope.PagetoWrite.push($scope.dirtypage[i]);
-    //                      $scope.PageInDisk.add($scope.dirtypage[i].pageid)
-    //             }
-    //         }
+                //case 1: write method: randomly write
+                if($scope.write_mode == 1){
 
-    //         $scope.count_in_disk += $scope.PagetoWrite.length;
+                    // console.log($scope.dp_buffer,"dp_buffer");
 
-    //         if ($scope.count_in_disk <= $scope.capacity){
-    //         //     //feasible
-    //             $scope.rest_idx = [];
-    //             for (k=0; k<$scope.capacity; k++){
-    //                 i = parseInt(k/5);
-    //                 j = k-5*i;
-    //                 if($scope.AllRecords[i][j]==""){
-    //                     $scope.rest_idx.push([i,j]);
-    //                 }
-    //             }
+                    $scope.PagetoWrite = [];
+                    temp = [];
+                    for (i=0; i<sharedModels.dp_buffer.length; i++){
 
-    //             for(k=0; k<$scope.PagetoWrite.length; k++){
+                        if($scope.dp_buffer[i].write_no != $scope.write_no){
+                            temp.push($scope.dp_buffer[i]);
+                        }
+                        else{
+                            console.log($scope.dp_buffer[i].pageid,"pageid");
+                            if (!$scope.PageInDisk.has($scope.dp_buffer[i].pageid)){
+                                 $scope.PagetoWrite.push($scope.dp_buffer[i]);
+                                 $scope.PageInDisk.add($scope.dp_buffer[i].pageid)
+                            }
+                        }
+                    }
+                    console.log($scope.PagetoWrite);
+                    $scope.dp_buffer = temp;
+                    $scope.count_in_disk += $scope.PagetoWrite.length;
 
-    //                 // idx = iterator1.next().value;
-    //                 i = $scope.rest_idx[k][0];
-    //                 j = $scope.rest_idx[k][1];
+                    if ($scope.count_in_disk <= $scope.capacity){
+                    //     //feasible
+                        $scope.rest_idx = [];
+                        for (k=0; k<$scope.capacity; k++){
+                            i = parseInt(k/5);
+                            j = k-5*i;
+                            if($scope.AllRecords[i][j]==""){
+                                $scope.rest_idx.push([i,j]);
+                            }
+                        }
+                        var idx_list = new Set([]);
+                        // console.log($scope.dirtypage.length);
+                        while (idx_list.size<$scope.PagetoWrite.length){
+                        // for (k = $scope.rest_idx.length; k--;){
+                            randomIndex = Math.floor(Math.random()*$scope.rest_idx.length);
+                            if(!idx_list.has(randomIndex)){
+                                idx_list.add(randomIndex)
+                            }
+                        }
+                        // console.log($scope.dirtypage);
+                        var iterator1 = idx_list.values();
+                        for(k=0; k<$scope.PagetoWrite.length; k++){
 
-    //                 $scope.AllRecords[i][j] = $scope.PagetoWrite[k].pageid;
-    //                 // console.log($scope.PagetoWrite[k]);
-    //             }
-    //             // console.log($scope.AllRecords);
-    //         }
-    //         // sharedModels.PageInDisk = $scope.PageInDisk;
-    //         $scope.dirtypage = [];
+                            idx = iterator1.next().value;
+                            i = $scope.rest_idx[idx][0];
+                            j = $scope.rest_idx[idx][1];
 
-    //     }
+                            $scope.AllRecords[i][j] = $scope.PagetoWrite[k].pageid;
+                            console.log($scope.PagetoWrite[k]);
+                        }
+                        console.log($scope.AllRecords);
+                    }
+                    sharedModels.PageInDisk = $scope.PageInDisk;
+                    // console.log(sharedModels.PageInDisk);
+                    console.log($scope.PageInDisk);
+                }
+
+                $scope.actTrans.delete($scope.write_no);
+
+                $scope.write_no = null;
+                $scope.selectedType = null;
+
+            }
+
+    }
+        // REMOVE SELECTED ROW(s) FROM TABLE.
+        $scope.removeRow = function () {
+            var arrTxn = [];
+            angular.forEach($scope.Array, function (value) {
+                if (!value.Remove) {
+                    arrTxn.push(value);
+                }
+            });
+            $scope.Array = arrTxn;
+        };
+
+        $scope.select_1 = function () {
+            $scope.write_mode = 1;
+        }
+
+        $scope.select_2 = function () {
+            $scope.write_mode = 2;
+        }
+
+        $scope.select_2 = function () {
+            $scope.write_mode = 3;
+        }
+
+        $scope.flush = function () {
+            console.log($scope.show_log);
+            $scope.show_log = false;
+            $scope.PagetoWrite = [];
+            for (i=0; i<$scope.dirtypage.length; i++){
+                if (!$scope.PageInDisk.has($scope.dirtypage[i].pageid)){
+                         $scope.PagetoWrite.push($scope.dirtypage[i]);
+                         $scope.PageInDisk.add($scope.dirtypage[i].pageid)
+                }
+            }
+
+            $scope.count_in_disk += $scope.PagetoWrite.length;
+
+            if ($scope.count_in_disk <= $scope.capacity){
+            //     //feasible
+                $scope.rest_idx = [];
+                for (k=0; k<$scope.capacity; k++){
+                    i = parseInt(k/5);
+                    j = k-5*i;
+                    if($scope.AllRecords[i][j]==""){
+                        $scope.rest_idx.push([i,j]);
+                    }
+                }
+
+                for(k=0; k<$scope.PagetoWrite.length; k++){
+
+                    // idx = iterator1.next().value;
+                    i = $scope.rest_idx[k][0];
+                    j = $scope.rest_idx[k][1];
+
+                    $scope.AllRecords[i][j] = $scope.PagetoWrite[k].pageid;
+                    // console.log($scope.PagetoWrite[k]);
+                }
+                // console.log($scope.AllRecords);
+            }
+            // sharedModels.PageInDisk = $scope.PageInDisk;
+            $scope.dirtypage = [];
+
+        }
 
 });
+
+
+function clock(){
+    //calculate angle
+    var d, h, m, s;
+    d = new Date;
+
+    h = 30 * ((d.getHours() % 12) + d.getMinutes() / 60);
+    m = 6 * d.getMinutes();
+    s = 6 * d.getSeconds();
+
+    //move hands
+    setAttr('h-hand', h);
+    setAttr('m-hand', m);
+    setAttr('s-hand', s);
+    setAttr('s-tail', s+180);
+
+    //display time
+    h = d.getHours();
+    m = d.getMinutes();
+    s = d.getSeconds();
+
+    if(h >= 12){
+        setText('suffix', 'PM');
+    }else{
+        setText('suffix', 'AM');
+    }
+
+    if(h != 12){
+        h %= 12;
+    }
+
+    setText('sec', s);
+    setText('min', m);
+    setText('hr', h);
+
+    //call every second
+    setTimeout(clock, 1000);
+
+};
+
+function setAttr(id,val){
+    var v = 'rotate(' + val + ', 70, 70)';
+    document.getElementById(id).setAttribute('transform', v);
+};
+
+function setText(id,val){
+    if(val < 10){
+        val = '0' + val;
+    }
+    document.getElementById(id).innerHTML = val;
+};
+
+window.onload=clock;
 
 
 

@@ -5,54 +5,154 @@
     </head>
     <body ng-controller="BufController">
         <div >
-        	<h3>Basic Database Concepts</h3>
+        	<h3>Buffer Manager</h3>
         </div>
 
-        <!-- <div id="NE">
-            <h5>Checkpoint Information</h5>
-                <table ng-show="show_checkpoint">
-                    <th>Dirty Page Table</th>
-                    <tr style="display: inline-block;" ng-repeat="txn in Array| unique : 'pageid'">
-                        <td ng-if="txn.txn_type == 'Write'"><label>{{txn.pageid}}</label></td>
-                        <td ng-if="txn.txn_type == 'Read'"><label>{{txn.pageid}}</label></td>
-                    </tr>
-                    <th>Active Transaction Table</th>
-                    <tr style="display: inline-block;" ng-repeat="item in actArr">
-                        <td><label>{{item}}</label></td>
-                    </tr>
-                </table>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col btn-group">
+                    <button type="button" class="btn btn-primary btn-select" ng-click="select_1()">Clock</button>
+                    <button type="button" class="btn btn-primary btn-select" ng-click="select_2()">LRU</button>
+                    <button type="button" class="btn btn-primary btn-select" ng-click="select_3()">LFU</button>
+                </div>
+            </div>
+            <div class="row" style="margin-bottom:0.5em;">
+                <div class="col-8 text-center">
+                    <div ng-if="write_mode == 1">
+                        <h5>Current Mode: Clock</h5>
+                    </div>
+                    <div ng-if="write_mode == 2">
+                        <h5>Current Mode: LRU</h5>
+                    </div>
+                    <div ng-if="write_mode == 3">
+                        <h5>Current Mode: LFU</h5>
+                    </div>
+                </div>
+                <div class="col-4 text-center">
+                    <button class="btn btn-primary reset-btn" onClick="window.location.reload()">Reset</button>
+                </div>
+            </div>
+        </div>
+    <!-- #class="jumbotron text-center" -->
 
+
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col col-5">
+                    <div class="sect">
+                        <ul class="first_title">
+                            <li style="padding-left: 0.5em;">
+                                <h5>Page ID</h5>
+                            </li>
+                            <!-- <li><input type="text" ng-model="txn_no" /></li> -->
+                            <li class="text-center">
+                                <select  ng-model="pageid" ng-options="type for type in pageids"></select>
+                            </li>
+                        </ul>
+                        <ul>
+                            <li style="padding-left: 1em;">
+                                <h5>Operation Type</h5>
+                            </li>
+                            <li class="text-center">
+                                <select  ng-model="selectedType" ng-options="type for type in choices"></select>
+                            </li>
+                        </ul>
+                        <ul>
+                            <li ng-if="selectedType == 'Write'" style="padding-left: 1em;">
+                                <h5>Write Data</h5>
+                            </li>
+                            <!-- <li><input type="text" ng-model="pageid" /></li> -->
+                            <li ng-if="selectedType == 'Write'" class="text-center">
+                                <select  ng-model="write_no" ng-options="type for type in write_nos"></select>
+                            </li>
+                        </ul>
+                        <ul class="text-center">
+                            <button class="btn btn-primary" ng-click="addRow()"> Add Record </button>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col col-3">
+                    <div class="sect">
+                        <div class="first_title">
+                            <h5><i class="fas fa-save"></i>  Volatile Storage</h5>
+                        </div>
+                            <!-- <button ng-click="commit()">Commit</button>  -->
+                        <div class="vt">
+                            <table ng-show="show_buffer" class="table table-sm">
+                                <tr ng-repeat="txn in Array| unique : 'pageid'">
+                                    <td ng-if="txn.txn_type == 'Write'"><label>【{{txn.pageid}}】</label></td>
+                                    <td ng-if="txn.txn_type == 'Read'"><label>{{txn.pageid}}</label></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col col-4">
+                    <div class="sect">
+                        <div class="first_title">
+                            <h5><i class="fas fa-hdd"></i>  Hard Disk Storage</h5>
+                        </div>
+                        <table class="table">
+                            <tr ng-repeat="_list in AllRecords">
+                                <td class="hd-storage" ng-repeat="item in _list track by $index"><label>{{item}}</label></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
 
-       
-        <div id="NW">
-        	<h5>Transaction Table</h5>
-
-                <table>
-                    <tr>
-                        <th>No.</th>
-                        <th>prev LSN</th>
-                        <th>Transaction No.</th>
-                        <th>Operation Type</th>
-                        <th>Page Id.</th>
-                        <th>Log Entry</th>
-                        <th>Undo Next LSN</th>
-                    </tr>
-                    <tr ng-repeat="txn in Array">
-                        <td><label>{{$index + 1}}</label></td>
-                        <td>---</td>
-                        <td><label>{{txn.txn_no}}</label></td>
-                        <td><label>{{txn.txn_type}}</label></td>
-                        <td><label>{{txn.pageid}}</label></td>
-                        <td>{{txn.txn_type + " " + txn.pageid}}
-                        <td>---<td>
-                    </tr>
-                </table>
-
-                <div id="display" style="padding:10px 0;">{{display}}</div>
-        </div> -->
-
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col">
+                    <div class="sect">
+                        <div class="first_title">
+                            <h5><i class="fas fa-sticky-note"></i>  Transaction Log</h5>
+                        </div>
+                            <!-- <div ng-click = "commit()"> -->
+                        <div class="analog-clock">
+                            <svg width="140" height="140">
+                                <circle id="clock-face" cx="70" cy="70" r="65" />
+                                <line id="m-hand" x1="70" y1="70" x2="70" y2="20" />
+                                <text x="66" y="18">1</text>
+                                <text x="126" y="76">2</text>
+                                <text x="66" y="130">3</text>
+                                <text x="7" y="76">4</text>
+                            </svg>
+                        </div>
+                        <div class="text-center">
+                            <button class="btn btn-primary" ng-click="flush()">Flush</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="sect">
+                        <div class="first_title">
+                            <h5><i class="fas fa-table"></i>  Transaction Table</h5>
+                        </div>
+                        <table class="table txn-table">
+                            <tr>
+                                <th class="square">    </th>
+                                <th class="square"><h7>No.</h7></th>
+                                <th class="square"><h7>Transaction No.</h7></th>
+                                <th class="square"><h7>Operation Type</h7></th>
+                                <th class="square"><h7>Page Id.</h7></th>
+                            </tr>
+                            <tr ng-repeat="txn in Array">
+                                <td class="square"><input type="checkbox" ng-model="txn.Remove"/></td>
+                                <td class="square"><label>{{$index + 1}}</label></td>
+                                <td class="square"><label>{{txn.txn_no}}</label></td>
+                                <td class="square"><label>{{txn.txn_type}}</label></td>
+                                <td class="square"><label>{{txn.pageid}}</label></td>
+                            </tr>
+                        </table>
+                        <div class="text-center">
+                            <button class="btn btn-primary" ng-click="removeRow()">Remove Record</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </body>
 </html>
 

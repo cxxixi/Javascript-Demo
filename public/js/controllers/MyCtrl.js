@@ -46,7 +46,7 @@ myApp.controller('Controller', function($scope, sharedModels) {
         for(var i = 1; i <= 20; i++) {
           range.push(i);
         }
-        $scope.txn_nos = range;
+        $scope.write_nos = ["A", "B", "C", "D", "E"];
         $scope.pageids = range;
         $scope.PagetoWrite = [];
         //default is randomly write
