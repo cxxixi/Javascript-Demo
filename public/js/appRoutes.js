@@ -15,12 +15,12 @@ angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', f
 
 		.when('/logging', {
 			templateUrl: 'views/logging.html',
-			controller: 'LogController'	
+			controller: 'LogController'
 		})
 
 		.when('/recovery', {
 			templateUrl: 'views/recovery.html',
-			controller: 'RecController'	
+			controller: 'RecController'
 		});
 	$locationProvider.html5Mode(true);
 
