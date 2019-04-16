@@ -1,19 +1,3 @@
-<!-- <div class="jumbotron text-center">
-    <h1>Algorithm 2</h1>
-
-
-    <select  ng-model="selectedName" ng-options="x as x.label disable when x.disabled for x in names">
-    </select>
-
-    <button  ng-click="addNewChoice(selectedName)">Add node</button>
-  <div data-ng-repeat="choice in choicesA">
-    <input type="text" disabled ng-model="choice.name" name="" placeholder={{choice.id}}>
-
-  </div>
-
-</div>
- -->
-
  <html ng-app="LogCtrl">
     <head>
         <link rel="stylesheet" href="../css/style.css">
@@ -21,11 +5,8 @@
     </head>
     <body ng-controller="LogController">
         <div >
-            <h3>Basic Database Concepts</h3>
-            <!-- <button ng-click="select_1()">Commit(Randomly Write)</button> -->
-            <!-- <button ng-click="select_2()">Write Ahead Log(Sequential Write)</button> -->
+        	<h3>Basic Database Concepts</h3>
         </div>
-    <!-- #class="jumbotron text-center" -->
 
 
         <div id="NW">
@@ -42,37 +23,11 @@
                     </tr>
                 </table>
 
-            <!--<p><strong>Active Transaction Table</strong></p>
-                <table ng-show="show_checkpoint">
-                    <tr ng-repeat="item in actArr">
-                        <td><label>{{item}}</label></td>
-                    </tr>
-                </table> -->
             </div>
         </div>
 
-<!--         <div id="SE">
-
-            <p><strong>Transaction Log</strong></p>
-
-            <table ng-show="show_log">
-                <tr ng-repeat="txn in dirtypage">
-                    <td><label>{{$index + 1}}</label></td>
-                    <td><label>{{txn.txn_no}}</label></td>
-                    <td><label>{{txn.txn_type}}</label></td>
-                    <td><label>{{txn.pageid}}</label></td>
-                </tr>
-            </table>
-            <button ng-click="flush()">Flush</button>
-
-
-                <div id="display" style="padding:10px 0;">{{display}}</div>
-            </div>
-        </div> -->
-
-
         <div id="NE">
-            <h5>Transaction Table</h5>
+        	<h5>Transaction Table</h5>
                 <ul>
                     <li>Transaction No.</li>
                     <li>
@@ -105,7 +60,7 @@
                     </li>
                 </ul>
                 <ul>
-                    <li> </li><li><button ng-click="addRow()"> Add Record </button></li>
+                    <li> </li><li><button ng-click="addRow()"> Add Record </button></li>
                 </ul>
 
                 <table>
@@ -120,7 +75,7 @@
                     </tr>
                     <tr ng-repeat="txn in Array">
                         <td><label>{{$index + 1}}</label></td>
-                        <td>---</td>
+                        <td>{{txn.txn_LSN}}</td>
                         <td><label>{{txn.txn_no}}</label></td>
                         <td><label>{{txn.txn_type}}</label></td>
                         <td><label>{{txn.pageid}}</label></td>
@@ -138,23 +93,7 @@
         </div>
 
 
-        <!-- <div id="SW">
-            <p><strong>HardDisk Storage</strong></p>
-
-                <div>
-                    <table>
-                        <tr ng-repeat="_list in AllRecords">
-                            <td ng-repeat="item in _list track by $index"><label>{{item}}</label></td>
-                        </tr>
-                    </table>
-
-                </div>
-
-                <div id="display" style="padding:10px 0;">{{display}}</div>
-        </div>
-
- -->
-
     </body>
 </html>
+
 

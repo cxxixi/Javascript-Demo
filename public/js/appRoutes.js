@@ -13,6 +13,11 @@ angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', f
 			controller: 'Controller'
 		})
 
+		.when('/buffer', {
+			templateUrl: 'views/buffer.html',
+			controller: 'BufController'	
+		})
+
 		.when('/logging', {
 			templateUrl: 'views/logging.html',
 			controller: 'LogController'
