@@ -63,7 +63,7 @@ myApp.controller('BufController', function($scope, sharedModels) {
         $scope.clockInd = $scope.clockHand % 4;
 
         //Each index is one of the four frames
-        $scope.pageArr = ["1","1","2","3"];
+        $scope.pageArr = ["0","0","0","0"];
         $scope.valArr = ["","","",""];
         $scope.dirtyArr = [false, false, false, false];
         $scope.refArr = [false, false, false, false];
