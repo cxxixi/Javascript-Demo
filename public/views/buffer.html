@@ -53,8 +53,11 @@
                             <li style="padding-left: 1em;">
                                 <h5>Operation Type</h5>
                             </li>
-                            <li class="text-center">
-                                <select  ng-model="selectedType" ng-options="type for type in choices"></select>
+                            <li>
+                                <button ng-click="selectedType = 'Write'">Write</button>
+                                <button ng-click="selectedType = 'Read'">Read</button>
+                                <button ng-click="selectedType = 'Commit'">Commit</button>
+                                <button ng-click="selectedType = 'Clock'">Clock</button>
                             </li>
                         </ul>
                         <ul>
@@ -106,46 +109,122 @@
             <div class="row">
                 <div class="col">
                     <div class="sect">
-                        <div class="first_title"
-                        style="float: left;">
-                            <h5><i class="fas fa-sticky-note"></i>  Transaction Log</h5>
-                            <div class="analog-clock" style="float: left;">
-                                <svg width="140" height="140">
-                                    <circle id="clock-face" cx="70" cy="70" r="65" />
-                                    <line id="m-hand" x1="70" y1="70" x2="70" y2="20" />
-                                    <text x="66" y="18">1</text>
-                                    <text x="126" y="76">2</text>
-                                    <text x="66" y="130">3</text>
-                                    <text x="7" y="76">4</text>
-                                </svg>
+                        <!-- <div style="top: 0px;"> -->
+                            <div class="first_title"
+                            style="float: left;">
+                                <h5><i class="fas fa-sticky-note"></i>  Transaction Log</h5>
+                                <div class="analog-clock" style="float: left;">
+                                    <svg width="140" height="140">
+                                        <circle id="clock-face" cx="70" cy="70" r="65" />
+                                        <line id="m-hand" x1="70" y1="70" x2="70" y2="20" />
+                                        <text x="66" y="18">1</text>
+                                        <text x="126" y="76">2</text>
+                                        <text x="66" y="130">3</text>
+                                        <text x="7" y="76">4</text>
+                                    </svg>
+                                </div>
                             </div>
-                        </div>
-                        <div class="second_title" style="float: right;">
-                            <h5><i class="fas fa-sticky-note"></i>  Frame Info</h5>
-                            <div class="frame_info" style="float: right;">
-                                <table>
-                                    <tr>
-                                        <th>Page ID: </th>
-                                        <td ng-bind="pageArr[clockInd]"></td>
-                                    </tr>
-                                    <tr>
-                                        <th>Value: </th>
-                                        <td ng-bind="valArr[clockInd]"></td>
-                                    </tr>
-                                    <tr>
-                                        <th>Dirty: </th>
-                                        <td ng-bind="dirtyArr[clockInd]"></td>
-                                    </tr>
-                                    <tr>
-                                        <th>RefBit: </th>
-                                        <td ng-bind="refArr[clockInd]"></td>
-                                    </tr>
-                                </table>
+                            <div class="second_title" style="float: right;">
+                                <h5><i class="fas fa-sticky-note"></i>  Frame Info</h5>
+                                <div class="frame_info" style="float: right;">
+                                    <!-- <table>
+                                        <tr>
+                                            <th>Page ID: </th>
+                                            <td ng-bind="pageArr[clockInd]"></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Value: </th>
+                                            <td ng-bind="valArr[clockInd]"></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Dirty: </th>
+                                            <td ng-bind="dirtyArr[clockInd]"></td>
+                                        </tr>
+                                        <tr>
+                                            <th>RefBit: </th>
+                                            <td ng-bind="refArr[clockInd]"></td>
+                                        </tr>
+                                    </table> -->
+                                    <table>
+                                        <tr>
+                                            <th></th>
+                                            <th>1</th>
+                                            <th>2</th>
+                                            <th>3</th>
+                                            <th>4</th>
+                                        </tr>
+                                        <tr>
+                                            <th>Page ID:</th>
+                                            <td ng-bind="pageArr[0]"></td>
+                                            <td ng-bind="pageArr[1]"></td>
+                                            <td ng-bind="pageArr[2]"></td>
+                                            <td ng-bind="pageArr[3]"></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Value:</th>
+                                            <td ng-bind="valArr[0]"></td>
+                                            <td ng-bind="valArr[1]"></td>
+                                            <td ng-bind="valArr[2]"></td>
+                                            <td ng-bind="valArr[3]"></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Dirty:</th>
+                                            <td ng-bind="dirtyArr[0]"></td>
+                                            <td ng-bind="dirtyArr[1]"></td>
+                                            <td ng-bind="dirtyArr[2]"></td>
+                                            <td ng-bind="dirtyArr[3]"></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Refbit:</th>
+                                            <td ng-bind="refArr[0]"></td>
+                                            <td ng-bind="refArr[1]"></td>
+                                            <td ng-bind="refArr[2]"></td>
+                                            <td ng-bind="refArr[3]"></td>
+                                        </tr>
+                                    </table>
+                                </div>
                             </div>
-                        </div>
                             <!-- <div ng-click = "commit()"> -->
-
-                        <div class="text-center">
+                        <!-- </div> -->
+                        <!-- <div style="bottom: 0px;" >
+                            <table>
+                                <tr>
+                                    <th>1</th>
+                                    <th>2</th>
+                                    <th>3</th>
+                                    <th>4</th>
+                                </tr>
+                                <tr>
+                                    <th>Page ID:</th>
+                                    <td ng-bind="pageArr[0]"></td>
+                                    <td ng-bind="pageArr[1]"></td>
+                                    <td ng-bind="pageArr[2]"></td>
+                                    <td ng-bind="pageArr[3]"></td>
+                                </tr>
+                                <tr>
+                                    <th>Value:</th>
+                                    <td ng-bind="valArr[0]"></td>
+                                    <td ng-bind="valArr[1]"></td>
+                                    <td ng-bind="valArr[2]"></td>
+                                    <td ng-bind="valArr[3]"></td>
+                                </tr>
+                                <tr>
+                                    <th>Dirty:</th>
+                                    <td ng-bind="dirtyArr[0]"></td>
+                                    <td ng-bind="dirtyArr[1]"></td>
+                                    <td ng-bind="dirtyArr[2]"></td>
+                                    <td ng-bind="dirtyArr[3]"></td>
+                                </tr>
+                                <tr>
+                                    <th>Refbit:</th>
+                                    <td ng-bind="refArr[0]"></td>
+                                    <td ng-bind="refArr[1]"></td>
+                                    <td ng-bind="refArr[2]"></td>
+                                    <td ng-bind="refArr[3]"></td>
+                                </tr>
+                            </table>
+                        </div>
+ -->                        <div class="text-center">
                             <button class="btn btn-primary" ng-click="flush()">Flush</button>
                         </div>
                     </div>

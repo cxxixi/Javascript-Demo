@@ -86,7 +86,7 @@ myApp.controller('BufController', function($scope, sharedModels) {
             }
             $scope.buffer = [];
 
-            if ($scope.selectedType != undefined && $scope.pageid != undefined) {
+            if (($scope.selectedType == "Write" || $scope.selectedType == "Read") && $scope.pageid != undefined) {
 
                 var txn = [];
                 txn.write_no = $scope.write_no;
@@ -116,11 +116,12 @@ myApp.controller('BufController', function($scope, sharedModels) {
 
                 //Either change the data in buffer or add page to buffer
                 if (stored) {
-                    if (txn.txn_type =="Write") {
+                    console.log("Located at: " + i);
+                    if (txn.txn_type == "Write") {
                         $scope.valArr[i] = txn.write_no;
                         $scope.dirtyArr[i] = true;
-                        $scope.refArr[i] = true;
                     }
+                    $scope.refArr[i] = true;
                 } else {
                     //Check to see what needs to leave the buffer pool
                     if ($scope.firstRW) {
@@ -129,26 +130,43 @@ myApp.controller('BufController', function($scope, sharedModels) {
                         $scope.clockHand = $scope.clockHand + 1;
                     }
 
-                    while (true) {
+                    var cont = true;
+                    while (cont) {
                         $scope.clockInd = $scope.clockHand % 4;
                         m = 90 * $scope.clockHand;
                         var v = 'rotate(' + m + ', 70, 70)';
                         document.getElementById('m-hand').setAttribute('transform', v);
                         if (!$scope.refArr[$scope.clockInd]) {
-                            if (!$scope.dirtyArr[$scope.clockInd]) {
+                            if ($scope.dirtyArr[$scope.clockInd]) { //Write dirty page to disk
                                 $scope.PageInDisk.add($scope.pageid);
-                               var indPos = parseInt($scope.pageArr[$scope.clockInd], 10) - 1;
-                               var ii = Math.floor(indPos / 4);
-                               var jj = indPos % 5;
-                               $scope.AllRecords[ii][jj] = $scope.pageArr[$scope.clockInd];
-                               $scope.AllValues[ii][jj] = $scope.valArr[$scope.clockInd];
+                                var indPos = parseInt($scope.pageArr[$scope.clockInd], 10) - 1;
+                                var ii = Math.floor(indPos / 5);
+                                var jj = indPos % 5;
+                                console.log("di: " + ii);
+                                console.log("dj: " + jj);
+                                $scope.AllRecords[ii][jj] = $scope.pageArr[$scope.clockInd];
+                                $scope.AllValues[ii][jj] = $scope.valArr[$scope.clockInd];
+
+                                console.log("newPage: " + $scope.AllRecords[ii][jj]);
+                                console.log("newVal: " + $scope.AllValues[ii][jj]);
 
                             }
+
                             $scope.pageArr[$scope.clockInd] = $scope.pageid;
-                            $scope.valArr[$scope.clockInd] = $scope.write_no;
-                            $scope.dirtyArr[$scope.clockInd] = false;
+                            if (txn.txn_type == "Write") {
+                                $scope.valArr[$scope.clockInd] = $scope.write_no;
+                                $scope.dirtyArr[$scope.clockInd] = true;
+                            } else { //read from disk
+                                var indPosa = parseInt($scope.pageArr[$scope.clockInd], 10) - 1;
+                                var iii = Math.floor(indPosa / 5);
+                                var jjj = indPosa % 5;
+                                console.log("i: " + iii);
+                                console.log("j: " + jjj);
+                                $scope.valArr[$scope.clockInd] = $scope.AllValues[iii][jjj];
+                                $scope.dirtyArr[$scope.clockInd] = false;
+                            }
                             $scope.refArr[$scope.clockInd] = false;
-                            break;
+                            cont = false;
                         } else {
                             $scope.refArr[$scope.clockInd] = false;
                             $scope.clockHand = $scope.clockHand + 1;
