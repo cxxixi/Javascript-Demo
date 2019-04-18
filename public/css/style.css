@@ -120,6 +120,11 @@ div.vt {
     padding-top:0.5em;
     padding-left: 0.5em;
 }
+
+.second_title {
+    padding-top:0.5em;
+    padding-left: 0.5em;
+}
 select {
     background-color: inherit;
 }

@@ -58,11 +58,11 @@
                             </li>
                         </ul>
                         <ul>
-                            <li ng-if="selectedType == 'Write'" style="padding-left: 1em;">
+                            <li style="padding-left: 1em;">
                                 <h5>Write Data</h5>
                             </li>
                             <!-- <li><input type="text" ng-model="pageid" /></li> -->
-                            <li ng-if="selectedType == 'Write'" class="text-center">
+                            <li class="text-center">
                                 <select  ng-model="write_no" ng-options="type for type in write_nos"></select>
                             </li>
                         </ul>
@@ -106,20 +106,45 @@
             <div class="row">
                 <div class="col">
                     <div class="sect">
-                        <div class="first_title">
+                        <div class="first_title"
+                        style="float: left;">
                             <h5><i class="fas fa-sticky-note"></i>  Transaction Log</h5>
+                            <div class="analog-clock" style="float: left;">
+                                <svg width="140" height="140">
+                                    <circle id="clock-face" cx="70" cy="70" r="65" />
+                                    <line id="m-hand" x1="70" y1="70" x2="70" y2="20" />
+                                    <text x="66" y="18">1</text>
+                                    <text x="126" y="76">2</text>
+                                    <text x="66" y="130">3</text>
+                                    <text x="7" y="76">4</text>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="second_title" style="float: right;">
+                            <h5><i class="fas fa-sticky-note"></i>  Frame Info</h5>
+                            <div class="frame_info" style="float: right;">
+                                <table>
+                                    <tr>
+                                        <th>Page ID: </th>
+                                        <td ng-bind="pageArr[clockInd]"></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Value: </th>
+                                        <td ng-bind="valArr[clockInd]"></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Dirty: </th>
+                                        <td ng-bind="dirtyArr[clockInd]"></td>
+                                    </tr>
+                                    <tr>
+                                        <th>RefBit: </th>
+                                        <td ng-bind="refArr[clockInd]"></td>
+                                    </tr>
+                                </table>
+                            </div>
                         </div>
                             <!-- <div ng-click = "commit()"> -->
-                        <div class="analog-clock">
-                            <svg width="140" height="140">
-                                <circle id="clock-face" cx="70" cy="70" r="65" />
-                                <line id="m-hand" x1="70" y1="70" x2="70" y2="20" />
-                                <text x="66" y="18">1</text>
-                                <text x="126" y="76">2</text>
-                                <text x="66" y="130">3</text>
-                                <text x="7" y="76">4</text>
-                            </svg>
-                        </div>
+
                         <div class="text-center">
                             <button class="btn btn-primary" ng-click="flush()">Flush</button>
                         </div>
@@ -132,23 +157,18 @@
                         </div>
                         <table class="table txn-table">
                             <tr>
-                                <th class="square">    </th>
                                 <th class="square"><h7>No.</h7></th>
-                                <th class="square"><h7>Transaction No.</h7></th>
                                 <th class="square"><h7>Operation Type</h7></th>
                                 <th class="square"><h7>Page Id.</h7></th>
+                                <th class="square"><h7>Write Data</h7></th>
                             </tr>
                             <tr ng-repeat="txn in Array">
-                                <td class="square"><input type="checkbox" ng-model="txn.Remove"/></td>
                                 <td class="square"><label>{{$index + 1}}</label></td>
-                                <td class="square"><label>{{txn.txn_no}}</label></td>
                                 <td class="square"><label>{{txn.txn_type}}</label></td>
                                 <td class="square"><label>{{txn.pageid}}</label></td>
+                                <td class="square"><label>{{txn.write_no}}</label></td>
                             </tr>
                         </table>
-                        <div class="text-center">
-                            <button class="btn btn-primary" ng-click="removeRow()">Remove Record</button>
-                        </div>
                     </div>
                 </div>
             </div>
