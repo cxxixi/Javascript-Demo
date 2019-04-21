@@ -45,7 +45,7 @@ myApp.controller('BufController', function($scope, sharedModels) {
 
         $scope.dp_buffer = [];
         $scope.id_set = sharedModels.id_set;
-        $scope.choices = ['Read', 'Write', 'Commit', 'Clock'];
+        $scope.choices = ['Read', 'Write', 'Flush', 'Clock'];
         $scope.PagetoWrite = [];
         //default is randomly write
         $scope.write_no = "";
@@ -80,10 +80,11 @@ myApp.controller('BufController', function($scope, sharedModels) {
         $scope.addRow = function () {
             var ind;
 
-            if (!$scope.show_buffer){
+            if (!$scope.show_buffer) {
                 $scope.buffer = [];
                 $scope.show_buffer = true;
             }
+
             $scope.buffer = [];
 
             if (($scope.selectedType == "Write" || $scope.selectedType == "Read") && $scope.pageid != undefined) {
@@ -190,95 +191,50 @@ myApp.controller('BufController', function($scope, sharedModels) {
 
             }
 
-            if ($scope.selectedType == "Clock"){
-                $scope.clockHand = $scope.clockHand + 1;
-                $scope.clockInd = $scope.clockHand % 4;
-                console.log($scope.clockHand);
-                m = 90 * $scope.clockHand;
-                var v = 'rotate(' + m + ', 70, 70)';
-                document.getElementById('m-hand').setAttribute('transform', v);
+            // if ($scope.selectedType == "Clock"){
+            //     $scope.clockHand = $scope.clockHand + 1;
+            //     $scope.clockInd = $scope.clockHand % 4;
+            //     console.log($scope.clockHand);
+            //     m = 90 * $scope.clockHand;
+            //     var v = 'rotate(' + m + ', 70, 70)';
+            //     document.getElementById('m-hand').setAttribute('transform', v);
 
-            }
+            // }
 
-            if ($scope.write_no != undefined && $scope.selectedType == "Commit"){
-                //console.log("Committing");
-
+            if ($scope.selectedType == "Flush") {
                 var txn = [];
-                txn.write_no = $scope.write_no;
                 txn.txn_type = $scope.selectedType;
-                txn.pageid = "";
                 $scope.Array.push(txn);
-                $scope.dp_buffer = sharedModels.dp_buffer;
 
-                //case 1: write method: randomly write
-                if($scope.write_mode == 1){
 
-                    // console.log($scope.dp_buffer,"dp_buffer");
+                for (ind = 0; ind < 4; ind++) {
+                    if ($scope.dirtyArr[ind]) { //Write dirty page to disk
+                        $scope.PageInDisk.add($scope.pageArr[ind]);
+                        var indPos = parseInt($scope.pageArr[ind], 10) - 1;
+                        var ii = Math.floor(indPos / 5);
+                        var jj = indPos % 5;
+                        console.log("di: " + ii);
+                        console.log("dj: " + jj);
+                        $scope.AllRecords[ii][jj] = $scope.pageArr[ind];
+                        $scope.AllValues[ii][jj] = $scope.valArr[ind];
 
-                    $scope.PagetoWrite = [];
-                    temp = [];
-                    for (i=0; i<sharedModels.dp_buffer.length; i++){
+                        console.log("newPage: " + $scope.AllRecords[ii][jj]);
+                        console.log("newVal: " + $scope.AllValues[ii][jj]);
 
-                        if($scope.dp_buffer[i].write_no != $scope.write_no){
-                            temp.push($scope.dp_buffer[i]);
-                        }
-                        else{
-                            console.log($scope.dp_buffer[i].pageid,"pageid");
-                            if (!$scope.PageInDisk.has($scope.dp_buffer[i].pageid)){
-                                 $scope.PagetoWrite.push($scope.dp_buffer[i]);
-                                 $scope.PageInDisk.add($scope.dp_buffer[i].pageid)
-                            }
-                        }
                     }
-                    console.log($scope.PagetoWrite);
-                    $scope.dp_buffer = temp;
-                    $scope.count_in_disk += $scope.PagetoWrite.length;
 
-                    if ($scope.count_in_disk <= $scope.capacity){
-                    //     //feasible
-                        $scope.rest_idx = [];
-                        for (k=0; k<$scope.capacity; k++){
-                            i = parseInt(k/5);
-                            j = k-5*i;
-                            if($scope.AllRecords[i][j]==""){
-                                $scope.rest_idx.push([i,j]);
-                            }
-                        }
-                        var idx_list = new Set([]);
-                        // console.log($scope.dirtypage.length);
-                        while (idx_list.size<$scope.PagetoWrite.length){
-                        // for (k = $scope.rest_idx.length; k--;){
-                            randomIndex = Math.floor(Math.random()*$scope.rest_idx.length);
-                            if(!idx_list.has(randomIndex)){
-                                idx_list.add(randomIndex)
-                            }
-                        }
-                        // console.log($scope.dirtypage);
-                        var iterator1 = idx_list.values();
-                        for(k=0; k<$scope.PagetoWrite.length; k++){
-
-                            idx = iterator1.next().value;
-                            i = $scope.rest_idx[idx][0];
-                            j = $scope.rest_idx[idx][1];
-
-                            $scope.AllRecords[i][j] = $scope.PagetoWrite[k].pageid;
-                            console.log($scope.PagetoWrite[k]);
-                        }
-                        console.log($scope.AllRecords);
-                    }
-                    sharedModels.PageInDisk = $scope.PageInDisk;
-                    // console.log(sharedModels.PageInDisk);
-                    console.log($scope.PageInDisk);
+                    $scope.pageArr[ind] = "0";
+                    $scope.valArr[ind] = "";
+                    $scope.dirtyArr[ind] = false;
+                    $scope.refArr[ind] = false;
                 }
 
-                $scope.actTrans.delete($scope.write_no);
-
-                $scope.write_no = null;
-                $scope.selectedType = null;
-
+            $scope.selectedType = null;
             }
 
-    }
+
+
+        }
         // REMOVE SELECTED ROW(s) FROM TABLE.
         // $scope.removeRow = function () {
         //     var arrTxn = [];

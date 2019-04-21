@@ -46,7 +46,7 @@
                             </li>
                             <!-- <li><input type="text" ng-model="txn_no" /></li> -->
                             <li class="text-center">
-                                <select  ng-model="pageid" ng-options="type for type in pageids"></select>
+                                <select  ng-hide="selectedType == 'Flush'" ng-model="pageid" ng-options="type for type in pageids"></select>
                             </li>
                         </ul>
                         <ul>
@@ -54,10 +54,10 @@
                                 <h5>Operation Type</h5>
                             </li>
                             <li>
-                                <button ng-click="selectedType = 'Write'">Write</button>
-                                <button ng-click="selectedType = 'Read'">Read</button>
-                                <button ng-click="selectedType = 'Commit'">Commit</button>
-                                <button ng-click="selectedType = 'Clock'">Clock</button>
+                                <button ng-class="{ 'buttonHigh' : selectedType == 'Write' }" ng-click="selectedType = 'Write'">Write</button>
+                                <button ng-class="{ 'buttonHigh' : selectedType == 'Read' }" ng-click="selectedType = 'Read'">Read</button>
+                                <button ng-class="{ 'buttonHigh' : selectedType == 'Flush' }" ng-click="selectedType = 'Flush'">Flush</button>
+                                <!-- <button ng-class="{ 'buttonHigh' : selectedType == 'Clock' }" ng-click="selectedType = 'Clock'">Clock</button> -->
                             </li>
                         </ul>
                         <ul>
@@ -66,7 +66,7 @@
                             </li>
                             <!-- <li><input type="text" ng-model="pageid" /></li> -->
                             <li class="text-center">
-                                <select  ng-model="write_no" ng-options="type for type in write_nos"></select>
+                                <select ng-hide="selectedType == 'Read' || selectedType == 'Flush'" ng-model="write_no" ng-options="type for type in write_nos"></select>
                             </li>
                         </ul>
                         <ul class="text-center">
@@ -148,38 +148,38 @@
                                     <table>
                                         <tr>
                                             <th></th>
-                                            <th>1</th>
-                                            <th>2</th>
-                                            <th>3</th>
-                                            <th>4</th>
+                                            <th ng-class="{ 'highColor' : clockInd==0 }">1</th>
+                                            <th ng-class="{ 'highColor' : clockInd==1 }">2</th>
+                                            <th ng-class="{ 'highColor' : clockInd==2 }">3</th>
+                                            <th ng-class="{ 'highColor' : clockInd==3 }">4</th>
                                         </tr>
                                         <tr>
                                             <th>Page ID:</th>
-                                            <td ng-bind="pageArr[0]"></td>
-                                            <td ng-bind="pageArr[1]"></td>
-                                            <td ng-bind="pageArr[2]"></td>
-                                            <td ng-bind="pageArr[3]"></td>
+                                            <td ng-class="{ 'highColor' : clockInd==0 }" ng-bind="pageArr[0]"></td>
+                                            <td ng-class="{ 'highColor' : clockInd==1 }" ng-bind="pageArr[1]"></td>
+                                            <td ng-class="{ 'highColor' : clockInd==2 }" ng-bind="pageArr[2]"></td>
+                                            <td ng-class="{ 'highColor' : clockInd==3 }" ng-bind="pageArr[3]"></td>
                                         </tr>
                                         <tr>
                                             <th>Value:</th>
-                                            <td ng-bind="valArr[0]"></td>
-                                            <td ng-bind="valArr[1]"></td>
-                                            <td ng-bind="valArr[2]"></td>
-                                            <td ng-bind="valArr[3]"></td>
+                                            <td ng-class="{ 'highColor' : clockInd==0 }" ng-bind="valArr[0]"></td>
+                                            <td ng-class="{ 'highColor' : clockInd==1 }" ng-bind="valArr[1]"></td>
+                                            <td ng-class="{ 'highColor' : clockInd==2 }" ng-bind="valArr[2]"></td>
+                                            <td ng-class="{ 'highColor' : clockInd==3 }" ng-bind="valArr[3]"></td>
                                         </tr>
                                         <tr>
                                             <th>Dirty:</th>
-                                            <td ng-bind="dirtyArr[0]"></td>
-                                            <td ng-bind="dirtyArr[1]"></td>
-                                            <td ng-bind="dirtyArr[2]"></td>
-                                            <td ng-bind="dirtyArr[3]"></td>
+                                            <td ng-class="{ 'highColor' : clockInd==0 }" ng-bind="dirtyArr[0]"></td>
+                                            <td ng-class="{ 'highColor' : clockInd==1 }" ng-bind="dirtyArr[1]"></td>
+                                            <td ng-class="{ 'highColor' : clockInd==2 }" ng-bind="dirtyArr[2]"></td>
+                                            <td ng-class="{ 'highColor' : clockInd==3 }" ng-bind="dirtyArr[3]"></td>
                                         </tr>
                                         <tr>
                                             <th>Refbit:</th>
-                                            <td ng-bind="refArr[0]"></td>
-                                            <td ng-bind="refArr[1]"></td>
-                                            <td ng-bind="refArr[2]"></td>
-                                            <td ng-bind="refArr[3]"></td>
+                                            <td ng-class="{ 'highColor' : clockInd==0 }" ng-bind="refArr[0]"></td>
+                                            <td ng-class="{ 'highColor' : clockInd==1 }" ng-bind="refArr[1]"></td>
+                                            <td ng-class="{ 'highColor' : clockInd==2 }" ng-bind="refArr[2]"></td>
+                                            <td ng-class="{ 'highColor' : clockInd==3 }" ng-bind="refArr[3]"></td>
                                         </tr>
                                     </table>
                                 </div>
@@ -224,9 +224,7 @@
                                 </tr>
                             </table>
                         </div>
- -->                        <div class="text-center">
-                            <button class="btn btn-primary" ng-click="flush()">Flush</button>
-                        </div>
+ -->
                     </div>
                 </div>
                 <div class="col">

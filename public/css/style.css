@@ -56,7 +56,7 @@ table {
     border-width: 2px;
     border-color: black;
 }
-th, tr{
+th, td, tr{
     border-style: solid;
     border-width: 2px;
     border-color: black;
@@ -156,4 +156,15 @@ label {
 
 .time-text{
     text-align:center;
+}
+
+.highColor {
+    background-color: var(--color-title);
+    color: white;
+}
+
+.buttonHigh {
+    border-color: var(--color-title);
+    border-width: 2px;
+
 }
