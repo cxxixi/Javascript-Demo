@@ -1,248 +1,201 @@
 var myApp = angular.module('RecCtrl', [])
 
-myApp.service('sharedModels', [function () {
 
-    // Shared Models
-    this.Array = [];
-    this.id_set = new Set([]);
-    this.DirtyPage = [];
-    this.dp_buffer = [];
-    this.PageInDisk = new Set(["1","2","9","13"]);
+myApp.controller('RecController', function($scope, AriesData) {
 
-}]);
+        $scope.Array = AriesData.Array;
 
-myApp.filter("unique", function() {
-  // we will return a function which will take in a collection
-  // and a keyname
-  return function(collection, keyname) {
-    // we define our output and keys array;
-    var output = [],
-      keys = [];
+        $scope.DirtyPage = new Set([]);
+        $scope.recLSN = []
+        var tmp = [];
+        for (var i=0; i<$scope.Array.length; i++){
+            var txn = [];
+            txn.LSN = $scope.Array[i].LSN;
+            txn.txn_no = $scope.Array[i].txn_no;
+            txn.prev_LSN = $scope.Array[i].prev_LSN;
+            txn.txn_type = $scope.Array[i].txn_type;
+            txn.pageid = $scope.Array[i].pageid;
+            txn.old_val = $scope.Array[i].old_val;
+            txn.new_val = $scope.Array[i].new_val;
+            txn.Selected = false;
+            tmp.push(txn);
+        }
+        $scope.Array = tmp;
+        $scope.show_analysis = false;
+        $scope.SelectedArr = [];
 
-    angular.forEach(collection, function(item) {
-      // we check to see whether our object exists
-      var key = item[keyname];
-      // if it's not already part of our keys array
-      if (keys.indexOf(key) === -1) {
-        // add it to our keys array
-        keys.push(key);
-        // push this item to our final output array
-        output.push(item);
-      }
-    });
+        $scope.actArr = [
+        {   "txn_no": 1,
+            "LastLSN": null,
+            "status": ""
+        }, 
+        {   "txn_no": 2,
+            "LastLSN": null,
+            "status": ""
+        }, 
+        {   "txn_no": 3,
+            "LastLSN": null,
+            "status": ""
+        }, 
+        {   "txn_no": 4,
+            "LastLSN": null,
+            "status": ""
+        }];
 
-    return output;
-  };
-});
 
-myApp.controller('RecController', function($scope, sharedModels) {
+    $scope.addRow = function (txn) {
 
-        $scope.Array = sharedModels.Array;
+        txn.Selected = true;
+        $scope.SelectedArr.push(txn);
 
-        $scope.dp_buffer = [];
-        $scope.id_set = sharedModels.id_set;
-        $scope.choices = ['Write', 'Commit', 'Checkpoint', 'Abort'];
-        $scope.PagetoWrite = [];
-        //default is randomly write
-        $scope.write_mode = 1;
-        $scope.dirtypage = [];
-        $scope.show_log = false;
-        $scope.show_buffer = true;
-        $scope.show_checkpoint = false;
+        if(txn.txn_no in [1,2,3,4]){
+            $scope.actArr[txn.txn_no-1].LastLSN = txn.LSN;
+        }
+
+        if (txn.txn_type == 'UPDATE') {
+
+            $scope.actArr[txn.txn_no-1].status = "U";
+            if(!$scope.DirtyPage.has(txn.pageid)){
+                $scope.DirtyPage.add(txn.pageid);
+                $scope.recLSN.push(txn);
+
+            }
+
+            // $scope.actArr[txn.txn_no-1].status = "U";
+            // if(!$scope.actTrans.has(txn.txn_no)) {
+            //     $scope.actTrans.add(txn.txn_no);
+            // }
+        }
+            // when taking checkpoint, txn_no and pageid should be null
+            // if (txn.txn_type == "CKPT-END"){
+
+            // //     $scope.show_checkpoint = true;
+            //     $scope.actArr = Array.from($scope.actTrans);
+
+            // }
+
+            // no pageid when committing a txn
+            if (txn.txn_type == "TXN-COMMIT"){
+
+                $scope.actArr[txn.txn_no-1].status = "C";
+                // $scope.actTrans.delete(txn.txn_no);
+
+            }
+            // Only selecting Abort type can make the abortion request valid.
+            if (txn.txn_type == "TXN-END"){
+                $scope.actArr[txn.txn_no-1].status = "";
+            //     // $scope.actTrans.delete($scope.txn_no);
+
+            }
+
+    };
+
+    $scope.analysis = function () {
+        // CLEAR TEXTBOX.
+        for (var i=0; i<$scope.Array.length; i++){
+            $scope.Array[i].Selected = false;
+        }
+            
+        $scope.show_analysis = true;
+        $scope.show_redo = false;
+        $scope.show_undo = false;
         $scope.actTrans = new Set([]); // active Transactions
-        $scope.actArr = [];
-
-
-        $scope.count_in_disk = 4;
-        $scope.AllRecords = [["1","2","","",""],["","","","9",""],["","","13","",""],["","","","",""]];
-        $scope.PageInDisk = new Set(["1","2","9","13"]);
-        // $scope.PageInDisk = sharedModels.PageInDisk;
-        $scope.capacity = 20;
-
-        // GET VALUES FROM INPUT BOXES AND ADD A NEW ROW TO THE TABLE.
-        $scope.addRow = function () {
-
-            if (!$scope.show_buffer){
-                $scope.buffer = [];
-                $scope.show_buffer = true;
-            }
-            $scope.buffer = [];
-            if ($scope.txn_no != undefined && $scope.selectedType != undefined && $scope.pageid != undefined) {
-                if(!$scope.actTrans.has($scope.txn_no)) {
-                    $scope.actTrans.add($scope.txn_no);
-                    var begTxn = [];
-                    begTxn.txn_no = $scope.txn_no;
-                    begTxn.txn_type = "Begin";
-                    $scope.Array.push(begTxn);
-                }
-                var txn = [];
-                txn.txn_no = $scope.txn_no;
-                txn.txn_type = $scope.selectedType;
-                txn.pageid = $scope.pageid;
-                $scope.dp_buffer = sharedModels.dp_buffer;
-
-                $scope.Array.push(txn);
-                $scope.buffer.push(txn);
-
-                // create a dirty page
-                if (txn.txn_type=="Write"){
-                    $scope.dirtypage.push(txn);
-                    sharedModels.DirtyPage.push(txn);
-                    sharedModels.dp_buffer.push(txn);
-                    // console.log(sharedModels.dp_buffer);
-                }
-
-                // CLEAR TEXTBOX.
-                $scope.txn_no = null;
-                $scope.selectedType = null;
-                $scope.pageid = null;
-
-            }
-
-            if ($scope.selectedType == "Checkpoint"){
-                $scope.show_checkpoint = true;
-                $scope.actArr = Array.from($scope.actTrans);
-                $scope.selectedType = null;
-
-            }
-
-            if ($scope.txn_no != undefined && $scope.selectedType == "Commit"){
-
-                var txn = [];
-                txn.txn_no = $scope.txn_no;
-                txn.txn_type = $scope.selectedType;
-                txn.pageid = "";
-                $scope.Array.push(txn);
-                $scope.dp_buffer = sharedModels.dp_buffer;
-
-                //case 1: write method: randomly write
-                if($scope.write_mode == 1){
-
-                    // console.log($scope.dp_buffer,"dp_buffer");
-
-                    $scope.PagetoWrite = [];
-                    temp = [];
-                    for (i=0; i<sharedModels.dp_buffer.length; i++){
-
-                        if($scope.dp_buffer[i].txn_no != $scope.txn_no){
-                            temp.push($scope.dp_buffer[i]);
-                        }
-                        else{
-                            console.log($scope.dp_buffer[i].pageid,"pageid");
-                            if (!$scope.PageInDisk.has($scope.dp_buffer[i].pageid)){
-                                 $scope.PagetoWrite.push($scope.dp_buffer[i]);
-                                 $scope.PageInDisk.add($scope.dp_buffer[i].pageid)
-                            }
-                        }
-                    }
-                    console.log($scope.PagetoWrite);
-                    $scope.dp_buffer = temp;
-                    $scope.count_in_disk += $scope.PagetoWrite.length;
-
-                    if ($scope.count_in_disk <= $scope.capacity){
-                    //     //feasible
-                        $scope.rest_idx = [];
-                        for (k=0; k<$scope.capacity; k++){
-                            i = parseInt(k/5);
-                            j = k-5*i;
-                            if($scope.AllRecords[i][j]==""){
-                                $scope.rest_idx.push([i,j]);
-                            }
-                        }
-                        var idx_list = new Set([]);
-                        // console.log($scope.dirtypage.length);
-                        while (idx_list.size<$scope.PagetoWrite.length){
-                        // for (k = $scope.rest_idx.length; k--;){
-                            randomIndex = Math.floor(Math.random()*$scope.rest_idx.length);
-                            if(!idx_list.has(randomIndex)){
-                                idx_list.add(randomIndex)
-                            }
-                        }
-                        // console.log($scope.dirtypage);
-                        var iterator1 = idx_list.values();
-                        for(k=0; k<$scope.PagetoWrite.length; k++){
-
-                            idx = iterator1.next().value;
-                            i = $scope.rest_idx[idx][0];
-                            j = $scope.rest_idx[idx][1];
-
-                            $scope.AllRecords[i][j] = $scope.PagetoWrite[k].pageid;
-                            console.log($scope.PagetoWrite[k]);
-                        }
-                        console.log($scope.AllRecords);
-                    }
-                    sharedModels.PageInDisk = $scope.PageInDisk;
-                    // console.log(sharedModels.PageInDisk);
-                    console.log($scope.PageInDisk);
-                }
-
-                $scope.txn_no = null;
-                $scope.selectedType = null;
-
-            }
 
     }
-        // REMOVE SELECTED ROW(s) FROM TABLE.
-        $scope.removeRow = function () {
-            var arrTxn = [];
-            angular.forEach($scope.Array, function (value) {
-                if (!value.Remove) {
-                    arrTxn.push(value);
-                }
-            });
-            $scope.Array = arrTxn;
-        };
 
-        $scope.select_1 = function () {
-            $scope.write_mode = 1;
-        }
 
-        $scope.select_2 = function () {
-            $scope.write_mode = 2;
-            $scope.show_log = true;
-        }
+    $scope.redo = function () {
+        // CLEAR TEXTBOX.
+        // for (var i=0; i<$scope.Array.length; i++){
+        //     $scope.Array[i].Selected = false;
+        // }
+        $scope.show_analysis = false;
+        $scope.show_redo = true;
+        $scope.show_undo = false;
+    }
 
-        $scope.flush = function () {
-            console.log($scope.show_log);
-            $scope.show_log = false;
-            $scope.PagetoWrite = [];
-            for (i=0; i<$scope.dirtypage.length; i++){
-                if (!$scope.PageInDisk.has($scope.dirtypage[i].pageid)){
-                         $scope.PagetoWrite.push($scope.dirtypage[i]);
-                         $scope.PageInDisk.add($scope.dirtypage[i].pageid)
+     $scope.undo = function () {
+        // CLEAR TEXTBOX.
+        // for (var i=0; i<$scope.Array.length; i++){
+        //     $scope.Array[i].Selected = false;
+        // }
+        $scope.show_error = false;
+        $scope.show_analysis = false;
+        $scope.show_redo = false;
+        $scope.show_undo = true;
+    }
+
+
+
+    $scope.redo_txn = function (txn){
+
+        $scope.show_error = false;
+        var prev_LSN = null;
+        var select_txn = txn.txn_no;
+        var ArrLength = $scope.Array.length;
+
+        if($scope.actArr[txn.txn_no-1].status=="C"){
+
+            var txn = [];
+            txn.txn_type = "TXN-END";
+            txn.txn_no = select_txn;
+
+            for (var i=1; i<$scope.Array.length; i++){
+                if($scope.Array[i].txn_type=="TXN-COMMIT" && $scope.Array[i].txn_no == select_txn){
+                    txn.prev_LSN = i+1;
                 }
             }
-
-            $scope.count_in_disk += $scope.PagetoWrite.length;
-
-            if ($scope.count_in_disk <= $scope.capacity){
-            //     //feasible
-                $scope.rest_idx = [];
-                for (k=0; k<$scope.capacity; k++){
-                    i = parseInt(k/5);
-                    j = k-5*i;
-                    if($scope.AllRecords[i][j]==""){
-                        $scope.rest_idx.push([i,j]);
-                    }
-                }
-
-                for(k=0; k<$scope.PagetoWrite.length; k++){
-
-                    // idx = iterator1.next().value;
-                    i = $scope.rest_idx[k][0];
-                    j = $scope.rest_idx[k][1];
-
-                    $scope.AllRecords[i][j] = $scope.PagetoWrite[k].pageid;
-                    // console.log($scope.PagetoWrite[k]);
-                }
-                // console.log($scope.AllRecords);
-            }
-            // sharedModels.PageInDisk = $scope.PageInDisk;
-            $scope.dirtypage = [];
-
+            $scope.Array.push(txn);
+            $scope.actArr[select_txn-1].status = "";
         }
+        else{
+            $scope.show_error = true;
+
+        }    
+    }
+
+    $scope.undo_txn = function (txn) {
+        // CLEAR TEXTBOX.
+        for (var i=0; i<$scope.Array.length; i++){
+            $scope.Array[i].Selected = false;
+        }
+
+        var prev_LSN = null;
+        var select_txn = txn.txn_no;
+        var ArrLength = $scope.Array.length;
+
+        if($scope.actArr[txn.txn_no-1].status=="U"){
+            
+            for (var i=$scope.Array.length-1; i>0; i--){
+
+                if($scope.Array[i].txn_type=="UPDATE" && $scope.Array[i].txn_no == select_txn){
+                    var txn = [];
+                    txn.txn_type = "CLR";
+                    txn.txn_no = select_txn;
+                    
+                    txn.prev_LSN = $scope.Array[i].LSN;
+                    txn.UndoNextLSN = $scope.Array[i].prev_LSN;
+                    
+                    ArrLength += 1;
+                    txn.LSN = ArrLength;
+                    txn.old_val = $scope.Array[i].new_val;
+                    txn.new_val = $scope.Array[i].old_val;
+                    $scope.Array.push(txn);
+                }
+            }
+            var txn = [];
+            txn.txn_type = "TXN-END";
+            txn.txn_no = select_txn;
+            txn.prev_LSN = ArrLength;
+            $scope.Array.push(txn);
+        }
+        
+    }
 
 });
+
+
+
 
 
 
