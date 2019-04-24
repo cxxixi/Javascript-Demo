@@ -66,7 +66,18 @@ myApp.controller('BufController', function($scope, sharedModels) {
         $scope.pageArr = ["0","0","0","0"];
         $scope.valArr = ["","","",""];
         $scope.dirtyArr = [false, false, false, false];
+
         $scope.refArr = [false, false, false, false];
+
+        $scope.lfuArr = [0,0,0,0];
+        $scope.maxOrd = [0,1,2,3];
+
+        $scope.lruArr = [0,1,2,3];
+
+        $scope.bufSize = 0;
+
+        $scope.ref = -1;
+
 
 
         $scope.count_in_disk = 4;
@@ -79,6 +90,7 @@ myApp.controller('BufController', function($scope, sharedModels) {
         // GET VALUES FROM INPUT BOXES AND ADD A NEW ROW TO THE TABLE.
         $scope.addRow = function () {
             var ind;
+            $scope.ref = -1;
 
             if (!$scope.show_buffer) {
                 $scope.buffer = [];
@@ -105,74 +117,164 @@ myApp.controller('BufController', function($scope, sharedModels) {
                 $scope.buffer.push(txn);
 
                 // Check to see if Page is in buffer, if so access info from buffer pool, else add to pool
-                var i = 0;
+                var bufi = 0;
                 var stored = false;
-                while (i < 4 && !stored) {
-                    if ($scope.pageid == $scope.pageArr[i]) {
+                while (bufi < 4 && !stored) {
+                    if ($scope.pageid == $scope.pageArr[bufi]) {
                         stored = true; //page is already in buffer
                     } else {
-                        i++;
+                        bufi++;
                     }
                 }
 
                 //Either change the data in buffer or add page to buffer
                 if (stored) {
-                    console.log("Located at: " + i);
-                    if (txn.txn_type == "Write") {
-                        $scope.valArr[i] = txn.write_no;
-                        $scope.dirtyArr[i] = true;
+                    var loc = 0;
+                    while (loc < 3) {
+                        if ($scope.maxOrd[loc] == bufi) {
+                            break;
+                        }
+                        loc++;
                     }
-                    $scope.refArr[i] = true;
-                } else {
-                    //Check to see what needs to leave the buffer pool
-                    if ($scope.firstRW) {
-                        $scope.firstRW = false;
-                    } else {
-                        $scope.clockHand = $scope.clockHand + 1;
+                    $scope.ref = loc;
+                    console.log("Located at: " + loc);
+                    if (txn.txn_type == "Write") {
+                        $scope.valArr[loc] = txn.write_no;
+                        $scope.dirtyArr[loc] = true;
+                    }
+                    $scope.refArr[loc] = true;
+                    var temp;
+                    var tempVal;
+                    $scope.lfuArr[loc] = $scope.lfuArr[loc] + 1;
+                    for (j = 0; j < 3; j++) {
+                        for (i = 3; i > 0; i--) {
+                            if ($scope.lfuArr[i] > $scope.lfuArr[i-1]) {
+                                temp = $scope.lfuArr[i];
+                                $scope.lfuArr[i] = $scope.lfuArr[i-1];
+                                $scope.lfuArr[i-1] = temp;
+
+                                tempVal = $scope.maxOrd[i];
+                                $scope.maxOrd[i] = $scope.maxOrd[i-1];
+                                $scope.maxOrd[i-1] = tempVal;
+                            }
+                        }
                     }
 
-                    var cont = true;
-                    while (cont) {
-                        $scope.clockInd = $scope.clockHand % 4;
-                        m = 90 * $scope.clockHand;
-                        var v = 'rotate(' + m + ', 70, 70)';
-                        document.getElementById('m-hand').setAttribute('transform', v);
-                        if (!$scope.refArr[$scope.clockInd]) {
-                            if ($scope.dirtyArr[$scope.clockInd]) { //Write dirty page to disk
+                    var frame = $scope.lruArr[loc];
+                    for (i = bufi; i > 0; i--) {
+                        $scope.lruArr[i] = $scope.lruArr[i-1];
+                    }
+                    $scope.lruArr[0] = frame;
+
+                    $scope.ref = 0;
+                    while (loc != $scope.maxOrd[$scope.ref]) {
+                        $scope.ref = $scope.ref + 1;
+                    }
+                } else {
+                    //CLOCK MANAGEMENT
+                    if ($scope.write_mode == 1) {
+                        //Check to see what needs to leave the buffer pool
+                        if ($scope.firstRW) {
+                            $scope.firstRW = false;
+                        } else {
+                            $scope.clockHand = $scope.clockHand + 1;
+                        }
+
+                        var cont = true;
+                        while (cont) {
+                            $scope.clockInd = $scope.clockHand % 4;
+                            m = 90 * $scope.clockHand;
+                            var v = 'rotate(' + m + ', 70, 70)';
+                            document.getElementById('m-hand').setAttribute('transform', v);
+                            if (!$scope.refArr[$scope.clockInd]) {
+                                if ($scope.dirtyArr[$scope.clockInd]) { //Write dirty page to disk
+                                    $scope.PageInDisk.add($scope.pageid);
+                                    var indPos = parseInt($scope.pageArr[$scope.clockInd], 10) - 1;
+                                    var ii = Math.floor(indPos / 5);
+                                    var jj = indPos % 5;
+                                    console.log("di: " + ii);
+                                    console.log("dj: " + jj);
+                                    $scope.AllRecords[ii][jj] = $scope.pageArr[$scope.clockInd];
+                                    $scope.AllValues[ii][jj] = $scope.valArr[$scope.clockInd];
+
+                                    console.log("newPage: " + $scope.AllRecords[ii][jj]);
+                                    console.log("newVal: " + $scope.AllValues[ii][jj]);
+
+                                }
+
+                                $scope.pageArr[$scope.clockInd] = $scope.pageid;
+                                if (txn.txn_type == "Write") {
+                                    $scope.valArr[$scope.clockInd] = $scope.write_no;
+                                    $scope.dirtyArr[$scope.clockInd] = true;
+                                } else { //read from disk
+                                    var indPosa = parseInt($scope.pageArr[$scope.clockInd], 10) - 1;
+                                    var iii = Math.floor(indPosa / 5);
+                                    var jjj = indPosa % 5;
+                                    console.log("i: " + iii);
+                                    console.log("j: " + jjj);
+                                    $scope.valArr[$scope.clockInd] = $scope.AllValues[iii][jjj];
+                                    $scope.dirtyArr[$scope.clockInd] = false;
+                                }
+                                $scope.refArr[$scope.clockInd] = false;
+                                cont = false;
+                            } else {
+                                $scope.refArr[$scope.clockInd] = false;
+                                $scope.clockHand = $scope.clockHand + 1;
+                                console.log($scope.clockHand);
+                            }
+                        }
+                    } else if ($scope.write_mode == 2) {
+                        if ($scope.bufSize < 4) {
+                            $scope.pageArr[$scope.bufSize] = $scope.pageid;
+                            if (txn.txn_type == "Write") {
+                                $scope.valArr[$scope.bufSize] = $scope.write_no;
+                                $scope.dirtyArr[$scope.bufSize] = true;
+                            } else { //read from disk
+                                var indPosa = parseInt($scope.pageArr[$scope.bufSize], 10) - 1;
+                                var iii = Math.floor(indPosa / 5);
+                                var jjj = indPosa % 5;
+                                console.log("i: " + iii);
+                                console.log("j: " + jjj);
+                                $scope.valArr[$scope.bufSize] = $scope.AllValues[iii][jjj];
+                                $scope.dirtyArr[$scope.bufSize] = false;
+                            }
+                            $scope.lfuArr[$scope.bufSize] = 1;
+                            $scope.bufSize = $scope.bufSize + 1;
+
+                        } else {
+                           if ($scope.dirtyArr[$scope.maxOrd[3]]) { //Write dirty page to disk
                                 $scope.PageInDisk.add($scope.pageid);
-                                var indPos = parseInt($scope.pageArr[$scope.clockInd], 10) - 1;
+                                var indPos = parseInt($scope.pageArr[$scope.maxOrd[3]], 10) - 1;
                                 var ii = Math.floor(indPos / 5);
                                 var jj = indPos % 5;
                                 console.log("di: " + ii);
                                 console.log("dj: " + jj);
-                                $scope.AllRecords[ii][jj] = $scope.pageArr[$scope.clockInd];
-                                $scope.AllValues[ii][jj] = $scope.valArr[$scope.clockInd];
+                                $scope.AllRecords[ii][jj] = $scope.pageArr[$scope.maxOrd[3]];
+                                $scope.AllValues[ii][jj] = $scope.valArr[$scope.maxOrd[3]];
 
                                 console.log("newPage: " + $scope.AllRecords[ii][jj]);
                                 console.log("newVal: " + $scope.AllValues[ii][jj]);
 
                             }
 
-                            $scope.pageArr[$scope.clockInd] = $scope.pageid;
+                            $scope.pageArr[$scope.maxOrd[3]] = $scope.pageid;
                             if (txn.txn_type == "Write") {
-                                $scope.valArr[$scope.clockInd] = $scope.write_no;
-                                $scope.dirtyArr[$scope.clockInd] = true;
+                                $scope.valArr[$scope.maxOrd[3]] = $scope.write_no;
+                                $scope.dirtyArr[$scope.maxOrd[3]] = true;
                             } else { //read from disk
-                                var indPosa = parseInt($scope.pageArr[$scope.clockInd], 10) - 1;
+                                var indPosa = parseInt($scope.pageArr[$scope.maxOrd[3]], 10) - 1;
                                 var iii = Math.floor(indPosa / 5);
                                 var jjj = indPosa % 5;
                                 console.log("i: " + iii);
                                 console.log("j: " + jjj);
-                                $scope.valArr[$scope.clockInd] = $scope.AllValues[iii][jjj];
-                                $scope.dirtyArr[$scope.clockInd] = false;
+                                $scope.valArr[$scope.maxOrd[3]] = $scope.AllValues[iii][jjj];
+                                $scope.dirtyArr[$scope.maxOrd[3]] = false;
                             }
-                            $scope.refArr[$scope.clockInd] = false;
-                            cont = false;
-                        } else {
-                            $scope.refArr[$scope.clockInd] = false;
-                            $scope.clockHand = $scope.clockHand + 1;
-                            console.log($scope.clockHand);
+                            $scope.lfuArr[$scope.maxOrd[3]] = 1;
                         }
+
+                    } else { //write_mode == 3
+
                     }
                 }
 
@@ -254,7 +356,7 @@ myApp.controller('BufController', function($scope, sharedModels) {
             $scope.write_mode = 2;
         }
 
-        $scope.select_2 = function () {
+        $scope.select_3 = function () {
             $scope.write_mode = 3;
         }
 
