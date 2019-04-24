@@ -1,15 +1,15 @@
- <html ng-app="LogCtrl">
+ <html ng-app="Aries">
     <head>
         <link rel="stylesheet" href="../css/style.css">
         <script src="../js/controllers/LogCtrl.js"></script>
     </head>
     <body ng-controller="LogController">
         <div >
-        	<h3>Basic Database Concepts</h3>
+        	<h3>ARIES LOGGING</h3>
         </div>
 
 
-        <div id="NW">
+        <!-- <div>
             <h5>Checkpoint Information</h5>
                 <table ng-show="show_checkpoint">
                     <th>Dirty Page Table</th>
@@ -24,10 +24,11 @@
                 </table>
 
             </div>
-        </div>
+        </div> -->
 
-        <div id="NE">
-        	<h5>Transaction Table</h5>
+        <div>
+        	<h5>Write Ahead Log</h5>
+                
                 <ul>
                     <li>Transaction No.</li>
                     <li>
@@ -46,6 +47,7 @@
                         <button ng-click="selectedType = 'Commit'">Commit</button>
                         <button ng-click="selectedType = 'Checkpoint'">Checkpoint</button>
                         <button ng-click="selectedType = 'Abort'">Abort</button>
+                        <button ng-click="selectedType = 'End'">End</button>
                     </li>
                 </ul>
                 <ul>
@@ -60,34 +62,49 @@
                     </li>
                 </ul>
                 <ul>
+                    <li>Old Value</li>
+                     <li >
+                        <input type="text" ng-model="old_val">
+                    </li>
+                </ul>
+                
+                     <ul>
+                    <li>New Value</li>
+                     <li >
+                        <input type="text" ng-model="new_val">
+                    </li>
+                </ul>
+
+          
+                <ul>
                     <li> </li><li><button ng-click="addRow()"> Add Record </button></li>
+                    <button class="btn btn-primary" ng-click="crash()">CRASH</button>
                 </ul>
 
                 <table>
                     <tr>
-                        <th>No.</th>
+                        <th>LSN</th>
                         <th>prev LSN</th>
                         <th>Transaction No.</th>
                         <th>Operation Type</th>
                         <th>Page Id.</th>
-                        <th>Log Entry</th>
+                        <th>Old Value</th>
+                        <th>New Value</th>
+                        <!-- <th>Log Entry</th> -->
                         <th>Undo Next LSN</th>
                     </tr>
                     <tr ng-repeat="txn in Array">
-                        <td><label>{{$index + 1}}</label></td>
-                        <td>{{txn.txn_LSN}}</td>
+                        <td><label>{{txn.LSN}}</label></td>
+                        <td>{{txn.prev_LSN}}</td>
                         <td><label>{{txn.txn_no}}</label></td>
                         <td><label>{{txn.txn_type}}</label></td>
                         <td><label>{{txn.pageid}}</label></td>
-                        <td>{{txn.txn_type + " " + txn.pageid}}
+                        <td><label>{{txn.old_val}}</label></td>
+                        <td><label>{{txn.new_val}}</label></td>
+                        <!-- <td>{{txn.txn_type + " " + txn.pageid}} -->
                         <td>---<td>
-                        <td><input type="checkbox" ng-model="txn.Remove"/></td>
                     </tr>
                 </table>
-
-                <div>
-                    <button ng-click="removeRow()">Remove Record</button>
-                </div>
 
                 <div id="display" style="padding:10px 0;">{{display}}</div>
         </div>
