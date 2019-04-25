@@ -24,19 +24,27 @@ myApp.controller('RecController', function($scope, AriesData) {
         $scope.show_analysis = false;
         $scope.SelectedArr = [];
 
+        $scope.selectAll = function() {
+            var toggleStatus = !$scope.isAllSelected;
+            angular.forEach($scope.Array,
+                function(itm) {
+                    $scope.addRow(itm);
+                });
+        }
+
         $scope.actArr = [
         {   "txn_no": 1,
             "LastLSN": null,
             "status": ""
-        }, 
+        },
         {   "txn_no": 2,
             "LastLSN": null,
             "status": ""
-        }, 
+        },
         {   "txn_no": 3,
             "LastLSN": null,
             "status": ""
-        }, 
+        },
         {   "txn_no": 4,
             "LastLSN": null,
             "status": ""
@@ -95,7 +103,7 @@ myApp.controller('RecController', function($scope, AriesData) {
         for (var i=0; i<$scope.Array.length; i++){
             $scope.Array[i].Selected = false;
         }
-            
+
         $scope.show_analysis = true;
         $scope.show_redo = false;
         $scope.show_undo = false;
@@ -151,7 +159,7 @@ myApp.controller('RecController', function($scope, AriesData) {
         else{
             $scope.show_error = true;
 
-        }    
+        }
     }
 
     $scope.undo_txn = function (txn) {
@@ -165,17 +173,17 @@ myApp.controller('RecController', function($scope, AriesData) {
         var ArrLength = $scope.Array.length;
 
         if($scope.actArr[txn.txn_no-1].status=="U"){
-            
+
             for (var i=$scope.Array.length-1; i>0; i--){
 
                 if($scope.Array[i].txn_type=="UPDATE" && $scope.Array[i].txn_no == select_txn){
                     var txn = [];
                     txn.txn_type = "CLR";
                     txn.txn_no = select_txn;
-                    
+
                     txn.prev_LSN = $scope.Array[i].LSN;
                     txn.UndoNextLSN = $scope.Array[i].prev_LSN;
-                    
+
                     ArrLength += 1;
                     txn.LSN = ArrLength;
                     txn.old_val = $scope.Array[i].new_val;
@@ -189,13 +197,7 @@ myApp.controller('RecController', function($scope, AriesData) {
             txn.prev_LSN = ArrLength;
             $scope.Array.push(txn);
         }
-        
+
     }
 
 });
-
-
-
-
-
-

@@ -45,7 +45,7 @@ myApp.controller('BufController', function($scope, sharedModels) {
 
         $scope.dp_buffer = [];
         $scope.id_set = sharedModels.id_set;
-        $scope.choices = ['Read', 'Write', 'Flush', 'Clock'];
+        $scope.choices = ['Read', 'Write', 'Flush'];
         $scope.PagetoWrite = [];
         $scope.write_nos = ["A", "B", "C", "D", "E"];
         //default is randomly write
@@ -488,9 +488,3 @@ myApp.controller('BufController', function($scope, sharedModels) {
         }
 
 });
-
-
-
-
-
-

@@ -15,22 +15,6 @@ h2.jumbotron {
     background-color: white;
 }
 
-/* div { position:fixed;} */
-/* #center{ top:0; }
-/*#NW { position:fixed; top:30%;   left:5; width:40%; height:40%}*/
-#NE { position:fixed;top:40%;   left:55%;width:40%; height:40% }
-#SW { position:fixed;top:70%; left:5; width:40%; height:40%}
-#SE { position:fixed;top:70%; left:55%;width:40%; height:40%}
-/*div{
-    font:15px Verdana;
-    width:900px;
-}
-
-.div1{
-
-height:10px;
-width:10px;
-}*/
 h5 {
     color: var(--color-title);
 }
@@ -101,7 +85,7 @@ div.sect {
     border-color: var(--color-title);
     padding: 0.25em;
     margin-bottom: 0.5em;
-    height: 35vh;
+    height: 90vh;
     background-color: white;
 }
 div.col {
@@ -109,16 +93,12 @@ div.col {
     padding: 0.3em;
 }
 table.table {
-    width: 100%;
+    width: 80%;
     height: auto;
     margin: auto;
 }
 div.vt {
     height: 25vh;
-    overflow: scroll;
-}
-div.tt {
-    height: 28vh;
     overflow: scroll;
 }
 .first_title {
@@ -127,7 +107,7 @@ div.tt {
 }
 
 .second_title {
-    padding-top: 0.5em;
+    padding-top:0.5em;
     padding-left: 0.5em;
 }
 select {
@@ -136,7 +116,15 @@ select {
 label {
     margin: 0;
 }
-
+.phase_title {
+    padding: 0.5em;
+}
+.scroll_left {
+    /* padding: 1em; */
+    /* width: 38vw; */
+    height: 85vh;
+    overflow: scroll;
+}
 
 
 .analog-clock{
@@ -171,7 +159,5 @@ label {
 .buttonHigh {
     border-color: var(--color-title);
     border-width: 2px;
-}
-.first_clock {
-    padding-left: 2em;
+
 }

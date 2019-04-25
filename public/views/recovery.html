@@ -1,177 +1,136 @@
  <html ng-app="RecCtrl">
     <head>
-        <link rel="stylesheet" href="../css/style.css">
+        <link rel="stylesheet" href="../css/recovery_style.css">
         <script src="../js/controllers/RecCtrl.js"></script>
     </head>
     <body ng-controller="RecController">
-        <div >
-        	<h3>ARIES RECOVERY</h3>
+        <div class="container-fluid">
+        	<h2 class="jumbotron text-center">ARIES Recovery</h2>
         </div>
 
-         <div class="row">
-            <div class="col btn-group">
-                <li>Recovery Phases</li>
-                <button type="button" class="btn btn-primary btn-select" ng-click="analysis()">Analysis</button>
-                <button type="button" class="btn btn-primary btn-select" ng-click="redo()">Redo</button>
-                <button type="button" class="btn btn-primary btn-select" ng-click="undo()">Undo</button>
+        <div class="container-fluid">
+             <div class="row">
+                 <div class="col-4 text-center" style="margin-top: 1em;">
+                     <h5>Recovery Phases</h5>
+                 </div>
+                <div class="col-8 btn-group">
+                    <button type="button" class="btn btn-primary btn-select" ng-click="analysis()">Analysis</button>
+                    <button type="button" class="btn btn-primary btn-select" ng-click="redo()">Redo</button>
+                    <button type="button" class="btn btn-primary btn-select" ng-click="undo()">Undo</button>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col col-7">
+                	<!-- <h5>Write Ahead Log</h5> -->
+                    <div class="sect">
+                        <div class="scroll_left">
+                            <table class="table table-sm">
+                                <tr>
+                                    <th>LSN</th>
+                                    <th>prev LSN</th>
+                                    <th>Transaction No.</th>
+                                    <th>Operation Type</th>
+                                    <th>Page Id.</th>
+                                    <th>Old Value</th>
+                                    <th>New Value</th>
+                                    <!-- <th>Log Entry</th> -->
+                                    <th>UndoNextLSN</th>
+                                    <th class="square"><input type="checkbox" ng-model="isAllSelected" ng-click="selectAll(txn)"/></th>
+                                </tr>
+
+                                <tr ng-repeat="txn in Array">
+                                    <td><label>{{$index + 1}}</label></td>
+                                    <td>{{txn.prev_LSN}}</td>
+                                    <td><label>{{txn.txn_no}}</label></td>
+                                    <td><label>{{txn.txn_type}}</label></td>
+                                    <td><label>{{txn.pageid}}</label></td>
+                                    <td><label>{{txn.old_val}}</label></td>
+                                    <td><label>{{txn.new_val}}</label></td>
+                                    <!-- <td>{{txn.txn_type + " " + txn.pageid}} -->
+                                    <td>{{txn.UndoNextLSN}}</td>
+                                    <td class="square"><input type="checkbox" ng-model="txn.Selected" ng-click="addRow(txn)"/></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <!-- <div id="display" style="padding:10px 0;">{{display}}</div> -->
+                    </div>
+                </div>
+                <div class="col col-5">
+                    <div class="sect">
+                        <!-- ANALYSIS PHASE -->
+                        <h5 class="phase_title" ng-show="show_analysis">Analysis Phase</h5>
+                        <table class="table table-sm" ng-show="show_analysis" style="margin-bottom: 1em;">
+                            <th>Dirty Page Table</th>
+                            <tr>
+                                <th>PageId</th>
+                                <th>RecLSN</th>
+                            </tr>
+
+                            <tr ng-repeat="txn in recLSN| unique : 'pageid'">
+                                <td><label>{{txn.pageid}}</label></td>
+                                <td><label>{{txn.LSN}}</label></td>
+                            </tr>
+                        </table>
+                        <!-- <br> -->
+                        <table class="table table-sm" ng-show="show_analysis">
+                            <th>Active Transaction Table</th>
+                            <tr>
+                                <th>Txn ID</th>
+                                <th>LastLSN</th>
+                                <th>status</th>
+                            </tr>
+
+                            <tr ng-if="!txn.status==''" ng-repeat="txn in actArr">
+                                <td><label>{{txn.txn_no}}</label></td>
+                                <td><label>{{txn.LastLSN}}</label></td>
+                                <td><label>{{txn.status}}</label></td>
+                            </tr>
+                        </table>
+
+
+                        <!-- REDO PHASE -->
+                        <h5 class="phase_title" ng-show="show_redo">Redo Phase</h5>
+
+                        <p ng-show='show_error'>This transaction is not committed before crash! We do nothing with it during REDO phase</p>
+                        <table class="table table-sm" ng-show="show_redo">
+                            <th>Active Transaction Table</th>
+                            <tr>
+                                <th>Txn ID</th>
+                                <th>LastLSN</th>
+                                <th>status</th>
+                                <th ng-show="show_redo">Redo Check</th>
+                            </tr>
+
+                            <tr ng-if="!txn.status==''" ng-repeat="txn in actArr">
+                                <td><label>{{txn.txn_no}}</label></td>
+                                <td><label>{{txn.LastLSN}}</label></td>
+                                <td><label>{{txn.status}}</label></td>
+                                <td ng-show="show_redo" class="square"><input type="checkbox" ng-click="redo_txn(txn)"/></td>
+                            </tr>
+                        </table>
+
+                        <!-- UNDO PHASE -->
+                        <h5 class="phase_title" ng-show="show_undo">Undo Phase</h5>
+                        <table class="table table-sm" ng-show="show_undo">
+                            <th>Active Transaction Table</th>
+                            <tr>
+                                <th>Txn ID</th>
+                                <th>LastLSN</th>
+                                <th>status</th>
+                                <th ng-show="show_undo">Undo Check</th>
+                            </tr>
+
+                            <tr ng-if="!txn.status==''" ng-repeat="txn in actArr">
+                                <td><label>{{txn.txn_no}}</label></td>
+                                <td><label>{{txn.LastLSN}}</label></td>
+                                <td><label>{{txn.status}}</label></td>
+                                <td ng-show="show_undo" class="square"><input type="checkbox" ng-click="undo_txn(txn)"/></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
-
-
-        <div id="NE">
-            <h5 ng-show="show_analysis">Analysis Phase</h5>
-                <table ng-show="show_analysis">
-                    <tr>
-                        <th>Dirty Page Table</th>
-                    </tr>
-                    <tr>
-                        <th>PageId</th>
-                        <th>RecLSN</th>
-                    </tr>
-
-                    <tr ng-repeat="txn in recLSN| unique : 'pageid'">
-                        <td><label>{{txn.pageid}}</label></td>
-                        <td><label>{{txn.LSN}}</label></td>
-                    </tr>
-                </table>
-
-                <br>
-                       
-                <table ng-show="show_analysis">    
-                    
-                    <th>Active Transaction Table</th>
-                    <tr>
-                        <th>Txn ID</th>
-                        <th>LastLSN</th>
-                        <th>Stauts</th>
-                    </tr>
-
-                    <tr ng-if="!txn.status==''" ng-repeat="txn in actArr">
-                        <td><label>{{txn.txn_no}}</label></td>
-                        <td><label>{{txn.LastLSN}}</label></td>
-                        <td><label>{{txn.status}}</label></td>
-                    </tr>
-                </table>
-
-            </div>
-        </div>
-
-
-        <div id="NE">
-            <h5 ng-show="show_redo">Redo Phase</h5>
-                <!-- <table ng-show="show_redo">
-                    <tr>
-                        <th>Dirty Page Table</th>
-                    </tr>
-                    <tr>
-                        <th>PageId</th>
-                        <th>RecLSN</th>
-                    </tr>
-
-                    <tr ng-repeat="txn in actArr| unique : 'pageid'">
-                        <td><label>{{txn.pageid}}</label></td>
-                        <td><label>{{txn.LSN}}</label></td>
-                        
-                    </tr>
-                </table> -->
-
-                <p ng-show='show_error'>This transaction is not committed before crash! We do nothing with it during REDO phase</p>   
-                <table ng-show="show_redo">    
-                    
-                    <th>Active Transaction Table</th>
-                    <tr>
-                        <th>Txn ID</th>
-                        <th>LastLSN</th>
-                        <th>Stauts</th>
-                        <th ng-show="show_redo">Redo Check</th>
-                    </tr>
-
-                    <tr ng-if="!txn.status==''" ng-repeat="txn in actArr">
-                        <td><label>{{txn.txn_no}}</label></td>
-                        <td><label>{{txn.LastLSN}}</label></td>
-                        <td><label>{{txn.status}}</label></td>
-                        <td ng-show="show_redo" class="square"><input type="checkbox" ng-click="redo_txn(txn)"/></td>
-                    </tr>
-                </table>
-
-            </div>
-        </div>
-
-        <div id="SE">
-            <h5 ng-show="show_undo">Undo Phase</h5>
-                <!-- <table ng-show="show_undo">
-                    <tr>
-                        <th>Dirty Page Table</th>
-                    </tr>
-                    <tr>
-                        <th>PageId</th>
-                        <th>RecLSN</th>
-                        <th ng-show="show_redo">Redo Check</th>
-                    </tr>
-
-                    <tr ng-repeat="txn in recLSN| unique : 'pageid'">
-                        <td><label>{{txn.pageid}}</label></td>
-                        <td><label>{{txn.LSN}}</label></td>
-                        <td ng-show="show_redo" class="square"><input type="checkbox" ng-model="txn.Selected" ng-click="redo_txn(txn)"/></td>
-                    </tr>
-                </table> -->
-
-                <table ng-show="show_undo">    
-                    
-                    <th>Active Transaction Table</th>
-                    <tr>
-                        <th>Txn ID</th>
-                        <th>LastLSN</th>
-                        <th>Stauts</th>
-                        <th ng-show="show_undo">Undo Check</th>
-                    </tr>
-
-                    <tr ng-if="!txn.status==''" ng-repeat="txn in actArr">
-                        <td><label>{{txn.txn_no}}</label></td>
-                        <td><label>{{txn.LastLSN}}</label></td>
-                        <td><label>{{txn.status}}</label></td>
-                        <td ng-show="show_undo" class="square"><input type="checkbox" ng-click="undo_txn(txn)"/></td>
-                    </tr>
-                </table>
-
-            </div>
-        </div>
-
-     
-
-        <div>
-        	<h5>Write Ahead Log</h5>
-                 <table>
-                    <tr>
-                        <th>LSN</th>
-                        <th>prev LSN</th>
-                        <th>Transaction No.</th>
-                        <th>Operation Type</th>
-                        <th>Page Id.</th>
-                        <th>Old Value</th>
-                        <th>New Value</th>
-                        <!-- <th>Log Entry</th> -->
-                        <th>UndoNextLSN</th>
-
-                    </tr>
-                    <tr ng-repeat="txn in Array">
-                        <td><label>{{$index + 1}}</label></td>
-                        <td>{{txn.prev_LSN}}</td>
-                        <td><label>{{txn.txn_no}}</label></td>
-                        <td><label>{{txn.txn_type}}</label></td>
-                        <td><label>{{txn.pageid}}</label></td>
-                        <td><label>{{txn.old_val}}</label></td>
-                        <td><label>{{txn.new_val}}</label></td>
-                        <!-- <td>{{txn.txn_type + " " + txn.pageid}} -->
-                        <td>{{txn.UndoNextLSN}}<td>
-                        <td class="square"><input type="checkbox" ng-model="txn.Selected" ng-click="addRow(txn)"/></td>
-                    </tr>
-                </table>
-
-                <div id="display" style="padding:10px 0;">{{display}}</div>
-        </div>
-
     </body>
 </html>
-
-

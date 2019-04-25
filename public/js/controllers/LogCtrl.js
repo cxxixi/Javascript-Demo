@@ -4,19 +4,35 @@ var myApp = angular.module('LogCtrl', [])
 myApp.controller('LogController', function($scope, AriesData) {
 
         $scope.Array = AriesData.Array;
-        $scope.choices = ['Write', 'Commit', 'Checkpoint', 'Abort'];
+        $scope.choices = ['Write', 'Commit', 'Checkpoint', 'Abort', 'End'];
         // $scope.show_checkpoint = false;
         $scope.actTrans = new Set([]); // active Transactions
         $scope.actArr = [];
         $scope.lsnArr = ["0","0","0","0"] // initialize the LSN of the 4 transactions
         $scope.LSN = 1;
 
+        var range = [];
+        var page_range = [];
+        for(var i = 1; i <= 4; i++) {
+          range.push(i);
+          page_range.push(i);
+        }
+        $scope.txn_nos = range;
+        page_range.push(5);
+        page_range.push(6);
+        $scope.pageids = page_range;
+        var val_range = []
+        for(var i = 1; i <= 20; i++) {
+          val_range.push(i);
+        }
+        $scope.all_vals = val_range;
+
         // GET VALUES FROM INPUT BOXES AND ADD A NEW ROW TO THE TABLE.
         $scope.addRow = function () {
             var ind;
 
             // if the input contains all the three info, then the request is valid
-            if ($scope.txn_no != undefined && $scope.selectedType == 'Write'  && $scope.pageid != undefined 
+            if ($scope.txn_no != undefined && $scope.selectedType == 'Write'  && $scope.pageid != undefined
                 && $scope.old_val != undefined && $scope.new_val != undefined) {
                 if(!$scope.actTrans.has($scope.txn_no)) {
                     $scope.actTrans.add($scope.txn_no);
@@ -136,9 +152,3 @@ myApp.controller('LogController', function($scope, AriesData) {
     }
 
 });
-
-
-
-
-
-

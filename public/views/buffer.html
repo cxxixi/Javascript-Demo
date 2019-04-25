@@ -53,11 +53,12 @@
                             <li style="padding-left: 1em;">
                                 <h5>Operation Type</h5>
                             </li>
-                            <li>
-                                <button ng-class="{ 'buttonHigh' : selectedType == 'Write' }" ng-click="selectedType = 'Write'">Write</button>
+                            <li class="text-center">
+                                <!-- <button ng-class="{ 'buttonHigh' : selectedType == 'Write' }" ng-click="selectedType = 'Write'">Write</button>
                                 <button ng-class="{ 'buttonHigh' : selectedType == 'Read' }" ng-click="selectedType = 'Read'">Read</button>
-                                <button ng-class="{ 'buttonHigh' : selectedType == 'Flush' }" ng-click="selectedType = 'Flush'">Flush</button>
+                                <button ng-class="{ 'buttonHigh' : selectedType == 'Flush' }" ng-click="selectedType = 'Flush'">Flush</button> -->
                                 <!-- <button ng-class="{ 'buttonHigh' : selectedType == 'Clock' }" ng-click="selectedType = 'Clock'">Clock</button> -->
+                                <select  ng-model="selectedType" ng-options="type for type in choices"></select>
                             </li>
                         </ul>
                         <ul>
@@ -103,159 +104,162 @@
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="container-fluid">
             <div class="row">
                 <div class="col">
                     <div class="sect">
                         <!-- <div style="top: 0px;"> -->
-                            <div class="first_title"
-                            style="float: left;">
-                                <h5><i class="fas fa-sticky-note"></i>  Buffer Manager</h5>
-                                <div ng-show="write_mode == 1" class="analog-clock" style="float: left;">
-                                    <svg width="140" height="140">
-                                        <circle id="clock-face" cx="70" cy="70" r="65" />
-                                        <line id="m-hand" x1="70" y1="70" x2="70" y2="20" />
-                                        <text x="66" y="18">1</text>
-                                        <text x="126" y="76">2</text>
-                                        <text x="66" y="130">3</text>
-                                        <text x="7" y="76">4</text>
-                                    </svg>
-                                </div>
-                                <div ng-show="write_mode == 2" class="lru-manager" style="float: left;">
+                        <div class="row">
+                            <div class="col col-6">
+                                <div class="first_title first_clock">
+                                    <h5><i class="fas fa-sticky-note"></i>Buffer Manager</h5>
+                                    <div ng-show="write_mode == 1" class="analog-clock">
+                                        <svg width="140" height="140">
+                                            <circle id="clock-face" cx="70" cy="70" r="65" />
+                                            <line id="m-hand" x1="70" y1="70" x2="70" y2="20" />
+                                            <text x="66" y="18">1</text>
+                                            <text x="126" y="76">2</text>
+                                            <text x="66" y="130">3</text>
+                                            <text x="7" y="76">4</text>
+                                        </svg>
+                                    </div>
+                                    <div ng-show="write_mode == 2" class="lru-manager" style="float: left;">
 
-                                </div>
-                            </div>
-                            <div class="second_title" style="float: right;">
-                                <h5><i class="fas fa-sticky-note"></i>  Frame Info</h5>
-                                <div class="frame_info" style="float: right;">
-                                    <!-- <table>
-                                        <tr>
-                                            <th>Page ID: </th>
-                                            <td ng-bind="pageArr[clockInd]"></td>
-                                        </tr>
-                                        <tr>
-                                            <th>Value: </th>
-                                            <td ng-bind="valArr[clockInd]"></td>
-                                        </tr>
-                                        <tr>
-                                            <th>Dirty: </th>
-                                            <td ng-bind="dirtyArr[clockInd]"></td>
-                                        </tr>
-                                        <tr>
-                                            <th>RefBit: </th>
-                                            <td ng-bind="refArr[clockInd]"></td>
-                                        </tr>
-                                    </table> -->
-                                    <table ng-show="write_mode == 1">
-                                        <tr>
-                                            <th></th>
-                                            <th ng-class="{ 'highColor' : clockInd==0 }">1</th>
-                                            <th ng-class="{ 'highColor' : clockInd==1 }">2</th>
-                                            <th ng-class="{ 'highColor' : clockInd==2 }">3</th>
-                                            <th ng-class="{ 'highColor' : clockInd==3 }">4</th>
-                                        </tr>
-                                        <tr>
-                                            <th>Page ID:</th>
-                                            <td ng-class="{ 'highColor' : clockInd==0 }" ng-bind="pageArr[0]"></td>
-                                            <td ng-class="{ 'highColor' : clockInd==1 }" ng-bind="pageArr[1]"></td>
-                                            <td ng-class="{ 'highColor' : clockInd==2 }" ng-bind="pageArr[2]"></td>
-                                            <td ng-class="{ 'highColor' : clockInd==3 }" ng-bind="pageArr[3]"></td>
-                                        </tr>
-                                        <tr>
-                                            <th>Value:</th>
-                                            <td ng-class="{ 'highColor' : clockInd==0 }" ng-bind="valArr[0]"></td>
-                                            <td ng-class="{ 'highColor' : clockInd==1 }" ng-bind="valArr[1]"></td>
-                                            <td ng-class="{ 'highColor' : clockInd==2 }" ng-bind="valArr[2]"></td>
-                                            <td ng-class="{ 'highColor' : clockInd==3 }" ng-bind="valArr[3]"></td>
-                                        </tr>
-                                        <tr>
-                                            <th>Dirty:</th>
-                                            <td ng-class="{ 'highColor' : clockInd==0 }" ng-bind="dirtyArr[0]"></td>
-                                            <td ng-class="{ 'highColor' : clockInd==1 }" ng-bind="dirtyArr[1]"></td>
-                                            <td ng-class="{ 'highColor' : clockInd==2 }" ng-bind="dirtyArr[2]"></td>
-                                            <td ng-class="{ 'highColor' : clockInd==3 }" ng-bind="dirtyArr[3]"></td>
-                                        </tr>
-                                        <tr>
-                                            <th>Refbit:</th>
-                                            <td ng-class="{ 'highColor' : clockInd==0 }" ng-bind="refArr[0]"></td>
-                                            <td ng-class="{ 'highColor' : clockInd==1 }" ng-bind="refArr[1]"></td>
-                                            <td ng-class="{ 'highColor' : clockInd==2 }" ng-bind="refArr[2]"></td>
-                                            <td ng-class="{ 'highColor' : clockInd==3 }" ng-bind="refArr[3]"></td>
-                                        </tr>
-                                    </table>
-
-                                    <table ng-show="write_mode == 2">
-                                        <tr>
-                                            <th></th>
-                                            <th ng-class="{ 'highColor' : ref==0 }">MFU</th>
-                                            <th ng-class="{ 'highColor' : ref==1 }"></th>
-                                            <th ng-class="{ 'highColor' : ref==2 }"></th>
-                                            <th ng-class="{ 'highColor' : ref==3 }">LFU</th>
-                                        </tr>
-                                        <tr>
-                                            <th>Page ID:</th>
-                                            <td ng-class="{ 'highColor' : ref==0 }" ng-bind="pageArr[maxOrd[0]]"></td>
-                                            <td ng-class="{ 'highColor' : ref==1 }" ng-bind="pageArr[maxOrd[1]]"></td>
-                                            <td ng-class="{ 'highColor' : ref==2 }" ng-bind="pageArr[maxOrd[2]]"></td>
-                                            <td ng-class="{ 'highColor' : ref==3 }" ng-bind="pageArr[maxOrd[3]]"></td>
-                                        </tr>
-                                        <tr>
-                                            <th>Value:</th>
-                                            <td ng-class="{ 'highColor' : ref==0 }" ng-bind="valArr[maxOrd[0]]"></td>
-                                            <td ng-class="{ 'highColor' : ref==1 }" ng-bind="valArr[maxOrd[1]]"></td>
-                                            <td ng-class="{ 'highColor' : ref==2 }" ng-bind="valArr[maxOrd[2]]"></td>
-                                            <td ng-class="{ 'highColor' : ref==3 }" ng-bind="valArr[maxOrd[3]]"></td>
-                                        </tr>
-                                        <tr>
-                                            <th>Dirty:</th>
-                                            <td ng-class="{ 'highColor' : ref==0 }" ng-bind="dirtyArr[maxOrd[0]]"></td>
-                                            <td ng-class="{ 'highColor' : ref==1 }" ng-bind="dirtyArr[maxOrd[1]]"></td>
-                                            <td ng-class="{ 'highColor' : ref==2 }" ng-bind="dirtyArr[maxOrd[2]]"></td>
-                                            <td ng-class="{ 'highColor' : ref==3 }" ng-bind="dirtyArr[maxOrd[3]]"></td>
-                                        </tr>
-                                        <tr>
-                                            <th>Ref Count:</th>
-                                            <td ng-class="{ 'highColor' : ref==0 }" ng-bind="lfuArr[0]"></td>
-                                            <td ng-class="{ 'highColor' : ref==1 }" ng-bind="lfuArr[1]"></td>
-                                            <td ng-class="{ 'highColor' : ref==2 }" ng-bind="lfuArr[2]"></td>
-                                            <td ng-class="{ 'highColor' : ref==3 }" ng-bind="lfuArr[3]"></td>
-                                        </tr>
-                                    </table>
-
-                                    <table ng-show="write_mode == 3">
-                                        <tr>
-                                            <th></th>
-                                            <th ng-class="{ 'highColor' : ref==0 }">MRU</th>
-                                            <th ng-class="{ 'highColor' : ref==1 }"></th>
-                                            <th ng-class="{ 'highColor' : ref==2 }"></th>
-                                            <th ng-class="{ 'highColor' : ref==3 }">LRU</th>
-                                        </tr>
-                                        <tr>
-                                            <th>Page ID:</th>
-                                            <td ng-class="{ 'highColor' : ref==0 }" ng-bind="pageArr[lruArr[0]]"></td>
-                                            <td ng-class="{ 'highColor' : ref==1 }" ng-bind="pageArr[lruArr[1]]"></td>
-                                            <td ng-class="{ 'highColor' : ref==2 }" ng-bind="pageArr[lruArr[2]]"></td>
-                                            <td ng-class="{ 'highColor' : ref==3 }" ng-bind="pageArr[lruArr[3]]"></td>
-                                        </tr>
-                                        <tr>
-                                            <th>Value:</th>
-                                            <td ng-class="{ 'highColor' : ref==0 }" ng-bind="valArr[lruArr[0]]"></td>
-                                            <td ng-class="{ 'highColor' : ref==1 }" ng-bind="valArr[lruArr[1]]"></td>
-                                            <td ng-class="{ 'highColor' : ref==2 }" ng-bind="valArr[lruArr[2]]"></td>
-                                            <td ng-class="{ 'highColor' : ref==3 }" ng-bind="valArr[lruArr[3]]"></td>
-                                        </tr>
-                                        <tr>
-                                            <th>Dirty:</th>
-                                            <td ng-class="{ 'highColor' : ref==0 }" ng-bind="dirtyArr[lruArr[0]]"></td>
-                                            <td ng-class="{ 'highColor' : ref==1 }" ng-bind="dirtyArr[lruArr[1]]"></td>
-                                            <td ng-class="{ 'highColor' : ref==2 }" ng-bind="dirtyArr[lruArr[2]]"></td>
-                                            <td ng-class="{ 'highColor' : ref==3 }" ng-bind="dirtyArr[lruArr[3]]"></td>
-                                        </tr>
-                                    </table>
+                                    </div>
                                 </div>
                             </div>
+                            <div class="col col-6">
+                                <div class="second_title">
+                                    <h5><i class="fas fa-sticky-note"></i>  Frame Info</h5>
+                                    <div class="frame_info" style="float: right;">
+                                        <!-- <table>
+                                            <tr>
+                                                <th>Page ID: </th>
+                                                <td ng-bind="pageArr[clockInd]"></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Value: </th>
+                                                <td ng-bind="valArr[clockInd]"></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Dirty: </th>
+                                                <td ng-bind="dirtyArr[clockInd]"></td>
+                                            </tr>
+                                            <tr>
+                                                <th>RefBit: </th>
+                                                <td ng-bind="refArr[clockInd]"></td>
+                                            </tr>
+                                        </table> -->
+                                        <table class="table table-sm" ng-show="write_mode == 1">
+                                            <tr>
+                                                <th></th>
+                                                <th ng-class="{ 'highColor' : clockInd==0 }">1</th>
+                                                <th ng-class="{ 'highColor' : clockInd==1 }">2</th>
+                                                <th ng-class="{ 'highColor' : clockInd==2 }">3</th>
+                                                <th ng-class="{ 'highColor' : clockInd==3 }">4</th>
+                                            </tr>
+                                            <tr>
+                                                <th>Page ID:</th>
+                                                <td ng-class="{ 'highColor' : clockInd==0 }" ng-bind="pageArr[0]"></td>
+                                                <td ng-class="{ 'highColor' : clockInd==1 }" ng-bind="pageArr[1]"></td>
+                                                <td ng-class="{ 'highColor' : clockInd==2 }" ng-bind="pageArr[2]"></td>
+                                                <td ng-class="{ 'highColor' : clockInd==3 }" ng-bind="pageArr[3]"></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Value:</th>
+                                                <td ng-class="{ 'highColor' : clockInd==0 }" ng-bind="valArr[0]"></td>
+                                                <td ng-class="{ 'highColor' : clockInd==1 }" ng-bind="valArr[1]"></td>
+                                                <td ng-class="{ 'highColor' : clockInd==2 }" ng-bind="valArr[2]"></td>
+                                                <td ng-class="{ 'highColor' : clockInd==3 }" ng-bind="valArr[3]"></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Dirty:</th>
+                                                <td ng-class="{ 'highColor' : clockInd==0 }" ng-bind="dirtyArr[0]"></td>
+                                                <td ng-class="{ 'highColor' : clockInd==1 }" ng-bind="dirtyArr[1]"></td>
+                                                <td ng-class="{ 'highColor' : clockInd==2 }" ng-bind="dirtyArr[2]"></td>
+                                                <td ng-class="{ 'highColor' : clockInd==3 }" ng-bind="dirtyArr[3]"></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Refbit:</th>
+                                                <td ng-class="{ 'highColor' : clockInd==0 }" ng-bind="refArr[0]"></td>
+                                                <td ng-class="{ 'highColor' : clockInd==1 }" ng-bind="refArr[1]"></td>
+                                                <td ng-class="{ 'highColor' : clockInd==2 }" ng-bind="refArr[2]"></td>
+                                                <td ng-class="{ 'highColor' : clockInd==3 }" ng-bind="refArr[3]"></td>
+                                            </tr>
+                                        </table>
+
+                                        <table class="table table-sm" ng-show="write_mode == 2">
+                                            <tr>
+                                                <th></th>
+                                                <th ng-class="{ 'highColor' : ref==0 }">MFU</th>
+                                                <th ng-class="{ 'highColor' : ref==1 }"></th>
+                                                <th ng-class="{ 'highColor' : ref==2 }"></th>
+                                                <th ng-class="{ 'highColor' : ref==3 }">LFU</th>
+                                            </tr>
+                                            <tr>
+                                                <th>Page ID:</th>
+                                                <td ng-class="{ 'highColor' : ref==0 }" ng-bind="pageArr[maxOrd[0]]"></td>
+                                                <td ng-class="{ 'highColor' : ref==1 }" ng-bind="pageArr[maxOrd[1]]"></td>
+                                                <td ng-class="{ 'highColor' : ref==2 }" ng-bind="pageArr[maxOrd[2]]"></td>
+                                                <td ng-class="{ 'highColor' : ref==3 }" ng-bind="pageArr[maxOrd[3]]"></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Value:</th>
+                                                <td ng-class="{ 'highColor' : ref==0 }" ng-bind="valArr[maxOrd[0]]"></td>
+                                                <td ng-class="{ 'highColor' : ref==1 }" ng-bind="valArr[maxOrd[1]]"></td>
+                                                <td ng-class="{ 'highColor' : ref==2 }" ng-bind="valArr[maxOrd[2]]"></td>
+                                                <td ng-class="{ 'highColor' : ref==3 }" ng-bind="valArr[maxOrd[3]]"></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Dirty:</th>
+                                                <td ng-class="{ 'highColor' : ref==0 }" ng-bind="dirtyArr[maxOrd[0]]"></td>
+                                                <td ng-class="{ 'highColor' : ref==1 }" ng-bind="dirtyArr[maxOrd[1]]"></td>
+                                                <td ng-class="{ 'highColor' : ref==2 }" ng-bind="dirtyArr[maxOrd[2]]"></td>
+                                                <td ng-class="{ 'highColor' : ref==3 }" ng-bind="dirtyArr[maxOrd[3]]"></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Ref Count:</th>
+                                                <td ng-class="{ 'highColor' : ref==0 }" ng-bind="lfuArr[0]"></td>
+                                                <td ng-class="{ 'highColor' : ref==1 }" ng-bind="lfuArr[1]"></td>
+                                                <td ng-class="{ 'highColor' : ref==2 }" ng-bind="lfuArr[2]"></td>
+                                                <td ng-class="{ 'highColor' : ref==3 }" ng-bind="lfuArr[3]"></td>
+                                            </tr>
+                                        </table>
+
+                                        <table class="table table-sm" ng-show="write_mode == 3">
+                                            <tr>
+                                                <th></th>
+                                                <th ng-class="{ 'highColor' : ref==0 }">MRU</th>
+                                                <th ng-class="{ 'highColor' : ref==1 }"></th>
+                                                <th ng-class="{ 'highColor' : ref==2 }"></th>
+                                                <th ng-class="{ 'highColor' : ref==3 }">LRU</th>
+                                            </tr>
+                                            <tr>
+                                                <th>Page ID:</th>
+                                                <td ng-class="{ 'highColor' : ref==0 }" ng-bind="pageArr[lruArr[0]]"></td>
+                                                <td ng-class="{ 'highColor' : ref==1 }" ng-bind="pageArr[lruArr[1]]"></td>
+                                                <td ng-class="{ 'highColor' : ref==2 }" ng-bind="pageArr[lruArr[2]]"></td>
+                                                <td ng-class="{ 'highColor' : ref==3 }" ng-bind="pageArr[lruArr[3]]"></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Value:</th>
+                                                <td ng-class="{ 'highColor' : ref==0 }" ng-bind="valArr[lruArr[0]]"></td>
+                                                <td ng-class="{ 'highColor' : ref==1 }" ng-bind="valArr[lruArr[1]]"></td>
+                                                <td ng-class="{ 'highColor' : ref==2 }" ng-bind="valArr[lruArr[2]]"></td>
+                                                <td ng-class="{ 'highColor' : ref==3 }" ng-bind="valArr[lruArr[3]]"></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Dirty:</th>
+                                                <td ng-class="{ 'highColor' : ref==0 }" ng-bind="dirtyArr[lruArr[0]]"></td>
+                                                <td ng-class="{ 'highColor' : ref==1 }" ng-bind="dirtyArr[lruArr[1]]"></td>
+                                                <td ng-class="{ 'highColor' : ref==2 }" ng-bind="dirtyArr[lruArr[2]]"></td>
+                                                <td ng-class="{ 'highColor' : ref==3 }" ng-bind="dirtyArr[lruArr[3]]"></td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                             <!-- <div ng-click = "commit()"> -->
                         <!-- </div> -->
                         <!-- <div style="bottom: 0px;" >
@@ -304,25 +308,25 @@
                         <div class="first_title">
                             <h5><i class="fas fa-table"></i>  Transaction Table</h5>
                         </div>
-                        <table class="table txn-table">
-                            <tr>
-                                <th class="square"><h7>No.</h7></th>
-                                <th class="square"><h7>Operation Type</h7></th>
-                                <th class="square"><h7>Page Id.</h7></th>
-                                <th class="square"><h7>Write Data</h7></th>
-                            </tr>
-                            <tr ng-repeat="txn in Array">
-                                <td class="square"><label>{{$index + 1}}</label></td>
-                                <td class="square"><label>{{txn.txn_type}}</label></td>
-                                <td class="square"><label>{{txn.pageid}}</label></td>
-                                <td class="square"><label>{{txn.write_no}}</label></td>
-                            </tr>
-                        </table>
+                        <div class="tt">
+                            <table class="table txn-table">
+                                <tr>
+                                    <th class="square"><h7>No.</h7></th>
+                                    <th class="square"><h7>Operation Type</h7></th>
+                                    <th class="square"><h7>Page Id.</h7></th>
+                                    <th class="square"><h7>Write Data</h7></th>
+                                </tr>
+                                <tr ng-repeat="txn in Array">
+                                    <td class="square"><label>{{$index + 1}}</label></td>
+                                    <td class="square"><label>{{txn.txn_type}}</label></td>
+                                    <td class="square"><label>{{txn.pageid}}</label></td>
+                                    <td class="square"><label>{{txn.write_no}}</label></td>
+                                </tr>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </body>
 </html>
-
-

@@ -8,29 +8,13 @@ body {
     background-color: var(--color-background) !important;
     padding-top:0px;
     width: 100%;
-}1
+}
 h2.jumbotron {
     margin-bottom: 0em;
     color: var(--color-title);
     background-color: white;
 }
 
-/* div { position:fixed;} */
-/* #center{ top:0; }
-/*#NW { position:fixed; top:30%;   left:5; width:40%; height:40%}*/
-#NE { position:fixed;top:40%;   left:55%;width:40%; height:40% }
-#SW { position:fixed;top:70%; left:5; width:40%; height:40%}
-#SE { position:fixed;top:70%; left:55%;width:40%; height:40%}
-/*div{
-    font:15px Verdana;
-    width:900px;
-}
-
-.div1{
-
-height:10px;
-width:10px;
-}*/
 h5 {
     color: var(--color-title);
 }
@@ -131,6 +115,10 @@ select {
 }
 label {
     margin: 0;
+}
+.scroll_table {
+    height: 45vh;
+    overflow: scroll;
 }
 
 

@@ -1,6 +1,6 @@
  <html ng-app="Aries">
     <head>
-        <link rel="stylesheet" href="../css/aries_style.css">
+        <link rel="stylesheet" href="../css/logging_style.css">
         <script src="../js/controllers/LogCtrl.js"></script>
     </head>
     <body ng-controller="LogController">
@@ -26,7 +26,7 @@
         </div> -->
         <div class="container-fluid">
             <div class="row">
-                <div class="col-8 text-center">
+                <div class="col-8 text-center" style="margin-top: 1em;">
                 	<h5>Write Ahead Log</h5>
                 </div>
                 <div class="col-4 text-center">
@@ -40,44 +40,44 @@
                             <li style="padding-left: 0.5em;">
                                 <h5>Transaction No</h5>
                             </li>
-                            <li>
-                                <button ng-click="txn_no = 1">1</button>
-                                <button ng-click="txn_no = 2">2</button>
-                                <button ng-click="txn_no = 3">3</button>
-                                <button ng-click="txn_no = 4">4</button>
+                            <li class="text-center">
+                                <select ng-model="txn_no" ng-options="type for type in txn_nos"></select>
                             </li>
                         </ul>
                         <ul>
                             <li style="padding-left: 1em;">
                                 <h5>Operation Type</h5>
                             </li>
-                            <li>
-                                <button ng-click="selectedType = 'Write'">Write</button>
+                            <li class="text-center">
+                                <select ng-model="selectedType" ng-options="type for type in choices"></select>
+                                <!-- <button ng-click="selectedType = 'Write'">Write</button>
                                 <button ng-click="selectedType = 'Commit'">Commit</button>
                                 <button ng-click="selectedType = 'Checkpoint'">Checkpoint</button>
                                 <button ng-click="selectedType = 'Abort'">Abort</button>
-                                <button ng-click="selectedType = 'End'">End</button>
+                                <button ng-click="selectedType = 'End'">End</button> -->
                             </li>
                         </ul>
                         <ul>
                             <li style="padding-left: 1em;">
                                 <h5>Page ID</h5>
                             </li>
-                            <li>
-                                <button ng-click="pageid = 1">1</button>
+                            <li class="text-center">
+                                <select ng-model="pageid" ng-options="type for type in pageids"></select>
+                                <!-- <button ng-click="pageid = 1">1</button>
                                 <button ng-click="pageid = 2">2</button>
                                 <button ng-click="pageid = 3">3</button>
                                 <button ng-click="pageid = 4">4</button>
                                 <button ng-click="pageid = 5">5</button>
-                                <button ng-click="pageid = 6">6</button>
+                                <button ng-click="pageid = 6">6</button> -->
                             </li>
                         </ul>
                         <ul>
                             <li style="padding-left: 1em;">
                                 <h5>Old Value</h5>
                             </li>
-                            <li>
-                                <input type="text" ng-model="old_val">
+                            <li class="text-center">
+                                <!-- <input type="text" ng-model="old_val"> -->
+                                <select ng-model="old_val" ng-options="type for type in all_vals"></select>
                             </li>
                         </ul>
 
@@ -85,8 +85,9 @@
                             <li style="padding-left: 1em;">
                                 <h5>New Value</h5>
                             </li>
-                            <li>
-                                <input type="text" ng-model="new_val">
+                            <li class="text-center">
+                                <!-- <input type="text" ng-model="new_val"> -->
+                                <select ng-model="new_val" ng-options="type for type in all_vals"></select>
                             </li>
                         </ul>
                         <ul class="text-center">
@@ -96,34 +97,37 @@
                 </div>
                 <div class="col col-6">
                     <div class="sect">
-                        <table class="table">
-                            <tr>
-                                <th>LSN</th>
-                                <th>prev LSN</th>
-                                <th>Transaction No.</th>
-                                <th>Operation Type</th>
-                                <th>Page Id.</th>
-                                <th>Old Value</th>
-                                <th>New Value</th>
-                                <!-- <th>Log Entry</th> -->
-                                <th>Undo Next LSN</th>
-                            </tr>
-                            <tr ng-repeat="txn in Array">
-                                <td><label>{{txn.LSN}}</label></td>
-                                <td>{{txn.prev_LSN}}</td>
-                                <td><label>{{txn.txn_no}}</label></td>
-                                <td><label>{{txn.txn_type}}</label></td>
-                                <td><label>{{txn.pageid}}</label></td>
-                                <td><label>{{txn.old_val}}</label></td>
-                                <td><label>{{txn.new_val}}</label></td>
-                                <!-- <td>{{txn.txn_type + " " + txn.pageid}} -->
-                                <td>---<td>
-                            </tr>
-                        </table>
+                        <div class="scroll_table">
+                            <table class="table table-sm">
+                                <tr>
+                                    <th>LSN</th>
+                                    <th>prev LSN</th>
+                                    <th>Transaction No.</th>
+                                    <th>Operation Type</th>
+                                    <th>Page Id.</th>
+                                    <th>Old Value</th>
+                                    <th>New Value</th>
+                                    <!-- <th>Log Entry</th> -->
+                                    <th>Undo Next LSN</th>
+                                </tr>
+
+                                <tr ng-repeat="txn in Array">
+                                    <td><label>{{txn.LSN}}</label></td>
+                                    <td>{{txn.prev_LSN}}</td>
+                                    <td><label>{{txn.txn_no}}</label></td>
+                                    <td><label>{{txn.txn_type}}</label></td>
+                                    <td><label>{{txn.pageid}}</label></td>
+                                    <td><label>{{txn.old_val}}</label></td>
+                                    <td><label>{{txn.new_val}}</label></td>
+                                    <!-- <td>{{txn.txn_type + " " + txn.pageid}} -->
+                                    <td>---<td>
+                                </tr>
+                            </table>
+                        </div>
                     </div>
                 </div>
 
-                <div id="display" style="padding:10px 0;">{{display}}</div>
+                <!-- <div id="display" style="padding:10px 0;">{{display}}</div> -->
         </div>
     </body>
 </html>
