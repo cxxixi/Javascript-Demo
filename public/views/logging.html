@@ -1,13 +1,12 @@
  <html ng-app="Aries">
     <head>
-        <link rel="stylesheet" href="../css/style.css">
+        <link rel="stylesheet" href="../css/aries_style.css">
         <script src="../js/controllers/LogCtrl.js"></script>
     </head>
     <body ng-controller="LogController">
-        <div >
-        	<h3>ARIES LOGGING</h3>
+        <div class="container-fluid">
+        	<h2 class="jumbotron text-center">ARIES Logging</h2>
         </div>
-
 
         <!-- <div>
             <h5>Checkpoint Information</h5>
@@ -25,92 +24,106 @@
 
             </div>
         </div> -->
-
-        <div>
-        	<h5>Write Ahead Log</h5>
-                
-                <ul>
-                    <li>Transaction No.</li>
-                    <li>
-                        <button ng-click="txn_no = 1">1</button>
-                        <button ng-click="txn_no = 2">2</button>
-                        <button ng-click="txn_no = 3">3</button>
-                        <button ng-click="txn_no = 4">4</button>
-                    </li>
-                </ul>
-
-
-                <ul>
-                    <li>Operation Type</li>
-                    <li>
-                        <button ng-click="selectedType = 'Write'">Write</button>
-                        <button ng-click="selectedType = 'Commit'">Commit</button>
-                        <button ng-click="selectedType = 'Checkpoint'">Checkpoint</button>
-                        <button ng-click="selectedType = 'Abort'">Abort</button>
-                        <button ng-click="selectedType = 'End'">End</button>
-                    </li>
-                </ul>
-                <ul>
-                    <li>Page Id.</li>
-                    <li>
-                        <button ng-click="pageid = 1">1</button>
-                        <button ng-click="pageid = 2">2</button>
-                        <button ng-click="pageid = 3">3</button>
-                        <button ng-click="pageid = 4">4</button>
-                        <button ng-click="pageid = 5">5</button>
-                        <button ng-click="pageid = 6">6</button>
-                    </li>
-                </ul>
-                <ul>
-                    <li>Old Value</li>
-                     <li >
-                        <input type="text" ng-model="old_val">
-                    </li>
-                </ul>
-                
-                     <ul>
-                    <li>New Value</li>
-                     <li >
-                        <input type="text" ng-model="new_val">
-                    </li>
-                </ul>
-
-          
-                <ul>
-                    <li> </li><li><button ng-click="addRow()"> Add Record </button></li>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-8 text-center">
+                	<h5>Write Ahead Log</h5>
+                </div>
+                <div class="col-4 text-center">
                     <button class="btn btn-primary" ng-click="crash()">CRASH</button>
-                </ul>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col col-6">
+                    <div class="sect">
+                        <ul class="first_title">
+                            <li style="padding-left: 0.5em;">
+                                <h5>Transaction No</h5>
+                            </li>
+                            <li>
+                                <button ng-click="txn_no = 1">1</button>
+                                <button ng-click="txn_no = 2">2</button>
+                                <button ng-click="txn_no = 3">3</button>
+                                <button ng-click="txn_no = 4">4</button>
+                            </li>
+                        </ul>
+                        <ul>
+                            <li style="padding-left: 1em;">
+                                <h5>Operation Type</h5>
+                            </li>
+                            <li>
+                                <button ng-click="selectedType = 'Write'">Write</button>
+                                <button ng-click="selectedType = 'Commit'">Commit</button>
+                                <button ng-click="selectedType = 'Checkpoint'">Checkpoint</button>
+                                <button ng-click="selectedType = 'Abort'">Abort</button>
+                                <button ng-click="selectedType = 'End'">End</button>
+                            </li>
+                        </ul>
+                        <ul>
+                            <li style="padding-left: 1em;">
+                                <h5>Page ID</h5>
+                            </li>
+                            <li>
+                                <button ng-click="pageid = 1">1</button>
+                                <button ng-click="pageid = 2">2</button>
+                                <button ng-click="pageid = 3">3</button>
+                                <button ng-click="pageid = 4">4</button>
+                                <button ng-click="pageid = 5">5</button>
+                                <button ng-click="pageid = 6">6</button>
+                            </li>
+                        </ul>
+                        <ul>
+                            <li style="padding-left: 1em;">
+                                <h5>Old Value</h5>
+                            </li>
+                            <li>
+                                <input type="text" ng-model="old_val">
+                            </li>
+                        </ul>
 
-                <table>
-                    <tr>
-                        <th>LSN</th>
-                        <th>prev LSN</th>
-                        <th>Transaction No.</th>
-                        <th>Operation Type</th>
-                        <th>Page Id.</th>
-                        <th>Old Value</th>
-                        <th>New Value</th>
-                        <!-- <th>Log Entry</th> -->
-                        <th>Undo Next LSN</th>
-                    </tr>
-                    <tr ng-repeat="txn in Array">
-                        <td><label>{{txn.LSN}}</label></td>
-                        <td>{{txn.prev_LSN}}</td>
-                        <td><label>{{txn.txn_no}}</label></td>
-                        <td><label>{{txn.txn_type}}</label></td>
-                        <td><label>{{txn.pageid}}</label></td>
-                        <td><label>{{txn.old_val}}</label></td>
-                        <td><label>{{txn.new_val}}</label></td>
-                        <!-- <td>{{txn.txn_type + " " + txn.pageid}} -->
-                        <td>---<td>
-                    </tr>
-                </table>
+                        <ul>
+                            <li style="padding-left: 1em;">
+                                <h5>New Value</h5>
+                            </li>
+                            <li>
+                                <input type="text" ng-model="new_val">
+                            </li>
+                        </ul>
+                        <ul class="text-center">
+                            <button class="btn btn-primary" ng-click="addRow()">Add Record</button>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col col-6">
+                    <div class="sect">
+                        <table class="table">
+                            <tr>
+                                <th>LSN</th>
+                                <th>prev LSN</th>
+                                <th>Transaction No.</th>
+                                <th>Operation Type</th>
+                                <th>Page Id.</th>
+                                <th>Old Value</th>
+                                <th>New Value</th>
+                                <!-- <th>Log Entry</th> -->
+                                <th>Undo Next LSN</th>
+                            </tr>
+                            <tr ng-repeat="txn in Array">
+                                <td><label>{{txn.LSN}}</label></td>
+                                <td>{{txn.prev_LSN}}</td>
+                                <td><label>{{txn.txn_no}}</label></td>
+                                <td><label>{{txn.txn_type}}</label></td>
+                                <td><label>{{txn.pageid}}</label></td>
+                                <td><label>{{txn.old_val}}</label></td>
+                                <td><label>{{txn.new_val}}</label></td>
+                                <!-- <td>{{txn.txn_type + " " + txn.pageid}} -->
+                                <td>---<td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
 
                 <div id="display" style="padding:10px 0;">{{display}}</div>
         </div>
-
-
     </body>
 </html>
-
-
