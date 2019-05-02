@@ -108,11 +108,6 @@ myApp.controller('BufController', function($scope, sharedModels) {
 
                 $scope.dp_buffer = sharedModels.dp_buffer;
 
-                //Find LSN of txn and add it to
-                //ind = parseInt($scope.write_no, 10) - 1;
-                //txn.txn_LSN = $scope.lsnArr[ind];
-                //$scope.lsnArr[ind] = ($scope.Array.length + 1).toString();
-
                 $scope.Array.push(txn);
                 $scope.buffer.push(txn);
 
@@ -188,7 +183,6 @@ myApp.controller('BufController', function($scope, sharedModels) {
                             $scope.lruArr[i] = $scope.lruArr[i-1];
                         }
                         $scope.lruArr[0] = frame;
-                        //console.log($scope.lruArr[0] + " " + $scope.lruArr[1] + " " + $scope.lruArr[2] + " " + $scope.lruArr[3]);
                         $scope.ref = 0;
                     }
                 } else {
@@ -365,15 +359,6 @@ myApp.controller('BufController', function($scope, sharedModels) {
 
             }
 
-            // if ($scope.selectedType == "Clock"){
-            //     $scope.clockHand = $scope.clockHand + 1;
-            //     $scope.clockInd = $scope.clockHand % 4;
-            //     console.log($scope.clockHand);
-            //     m = 90 * $scope.clockHand;
-            //     var v = 'rotate(' + m + ', 70, 70)';
-            //     document.getElementById('m-hand').setAttribute('transform', v);
-
-            // }
 
             if ($scope.selectedType == "Flush") {
                 var txn = [];
@@ -411,16 +396,6 @@ myApp.controller('BufController', function($scope, sharedModels) {
 
 
         }
-        // REMOVE SELECTED ROW(s) FROM TABLE.
-        // $scope.removeRow = function () {
-        //     var arrTxn = [];
-        //     angular.forEach($scope.Array, function (value) {
-        //         if (!value.Remove) {
-        //             arrTxn.push(value);
-        //         }
-        //     });
-        //     $scope.Array = arrTxn;
-        // };
 
         $scope.select_1 = function () {
             $scope.write_mode = 1;
@@ -465,11 +440,8 @@ myApp.controller('BufController', function($scope, sharedModels) {
                     j = $scope.rest_idx[k][1];
 
                     $scope.AllRecords[i][j] = $scope.PagetoWrite[k].pageid;
-                    // console.log($scope.PagetoWrite[k]);
                 }
-                // console.log($scope.AllRecords);
             }
-            // sharedModels.PageInDisk = $scope.PageInDisk;
             $scope.dirtypage = [];
 
         }

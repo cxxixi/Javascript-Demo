@@ -37,6 +37,7 @@ myApp.filter("unique", function() {
 
 myApp.controller('Controller', function($scope, sharedModels) {
 
+        // array to be shared between controller.
         $scope.Array = sharedModels.Array;
 
         $scope.dp_buffer = [];
@@ -57,18 +58,22 @@ myApp.controller('Controller', function($scope, sharedModels) {
 
 
         $scope.count_in_disk = 4;
-        $scope.AllRecords = [["1","2","","",""],["","","","9",""],["","","13","",""],["","","","",""]];
-        $scope.PageInDisk = new Set(["1","2","9","13"]);
-        // $scope.PageInDisk = sharedModels.PageInDisk;
+        //initialize records in the harddisk
+        $scope.AllRecords = [[1,2,"","",""],["","","",9,""],["","",13,"",""],["","","","",""]];
+        $scope.PageInDisk = new Set([1,2,9,13]);
+        // the default apacity of harddisk is 20
         $scope.capacity = 20;
+
         // GET VALUES FROM INPUT BOXES AND ADD A NEW ROW TO THE TABLE.
         $scope.addRow = function () {
 
+            //if buffer pool is not activated, activate it.
             if (!$scope.show_buffer){
                 $scope.buffer = [];
                 $scope.show_buffer = true;
             }
             $scope.buffer = [];
+            // for Write and Read operation, all the three components are required.
             if ($scope.txn_no != undefined && $scope.selectedType != undefined && $scope.pageid != undefined) {
                 var txn = [];
                 txn.txn_no = $scope.txn_no;
@@ -76,7 +81,7 @@ myApp.controller('Controller', function($scope, sharedModels) {
                 txn.pageid = $scope.pageid;
                 $scope.dp_buffer = sharedModels.dp_buffer;
 
-
+                // add the record into array and bufferpool
                 $scope.Array.push(txn);
                 $scope.buffer.push(txn);
                 // create a dirty page
@@ -105,8 +110,6 @@ myApp.controller('Controller', function($scope, sharedModels) {
                 //case 1: write method: randomly write
                 if($scope.write_mode == 1){
 
-                    // console.log($scope.dp_buffer,"dp_buffer");
-
                     $scope.PagetoWrite = [];
                     temp = [];
                     for (i=0; i<sharedModels.dp_buffer.length; i++){
@@ -115,21 +118,22 @@ myApp.controller('Controller', function($scope, sharedModels) {
                             temp.push($scope.dp_buffer[i]);
                         }
                         else{
-                            console.log($scope.dp_buffer[i].pageid,"pageid");
+                            // if the page is not in the harddisk, we add it in
                             if (!$scope.PageInDisk.has($scope.dp_buffer[i].pageid)){
                                  $scope.PagetoWrite.push($scope.dp_buffer[i]);
                                  $scope.PageInDisk.add($scope.dp_buffer[i].pageid)
                             }
                         }
                     }
-                    console.log($scope.PagetoWrite);
                     $scope.dp_buffer = temp;
                     $scope.count_in_disk += $scope.PagetoWrite.length;
 
+                    // if we still have space in harddisk
                     if ($scope.count_in_disk <= $scope.capacity){
                     //     //feasible
                         $scope.rest_idx = [];
                         for (k=0; k<$scope.capacity; k++){
+                            // find all empty space in the harddisk
                             i = parseInt(k/5);
                             j = k-5*i;
                             if($scope.AllRecords[i][j]==""){
@@ -137,15 +141,14 @@ myApp.controller('Controller', function($scope, sharedModels) {
                             }
                         }
                         var idx_list = new Set([]);
-                        // console.log($scope.dirtypage.length);
+
+                        //randomly pick out one spot for this page.
                         while (idx_list.size<$scope.PagetoWrite.length){
-                        // for (k = $scope.rest_idx.length; k--;){
                             randomIndex = Math.floor(Math.random()*$scope.rest_idx.length);
                             if(!idx_list.has(randomIndex)){
                                 idx_list.add(randomIndex)
                             }
                         }
-                        // console.log($scope.dirtypage);
                         var iterator1 = idx_list.values();
                         for(k=0; k<$scope.PagetoWrite.length; k++){
 
@@ -154,13 +157,9 @@ myApp.controller('Controller', function($scope, sharedModels) {
                             j = $scope.rest_idx[idx][1];
 
                             $scope.AllRecords[i][j] = $scope.PagetoWrite[k].pageid;
-                            console.log($scope.PagetoWrite[k]);
                         }
-                        console.log($scope.AllRecords);
                     }
                     sharedModels.PageInDisk = $scope.PageInDisk;
-                    // console.log(sharedModels.PageInDisk);
-                    console.log($scope.PageInDisk);
                 }
 
                 $scope.txn_no = null;
@@ -180,17 +179,19 @@ myApp.controller('Controller', function($scope, sharedModels) {
             $scope.Array = arrTxn;
         };
 
+        //change the write mode to randomly write
         $scope.select_1 = function () {
             $scope.write_mode = 1;
         }
 
+        // change the write mode to sequentially write
         $scope.select_2 = function () {
             $scope.write_mode = 2;
             $scope.show_log = true;
         }
 
+        //flush the records to harddisk
         $scope.flush = function () {
-            console.log($scope.show_log);
             $scope.show_log = false;
             $scope.PagetoWrite = [];
             for (i=0; i<$scope.dirtypage.length; i++){
@@ -220,21 +221,10 @@ myApp.controller('Controller', function($scope, sharedModels) {
                     j = $scope.rest_idx[k][1];
 
                     $scope.AllRecords[i][j] = $scope.PagetoWrite[k].pageid;
-                    // console.log($scope.PagetoWrite[k]);
                 }
-                // console.log($scope.AllRecords);
             }
-            // sharedModels.PageInDisk = $scope.PageInDisk;
             $scope.dirtypage = [];
 
         }
 
-
-
-            // $scope.count_in_disk += $scope.dirtypage.size();
-
-
-            // $scope.dirtypage = sharedModels.DirtyPage;
-            // console.log($scope.dirtypage);
-            // sharedModels.DirtyPage = [];
 });

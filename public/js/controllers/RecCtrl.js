@@ -24,14 +24,7 @@ myApp.controller('RecController', function($scope, AriesData) {
         $scope.show_analysis = false;
         $scope.SelectedArr = [];
 
-        $scope.selectAll = function() {
-            var toggleStatus = !$scope.isAllSelected;
-            angular.forEach($scope.Array,
-                function(itm) {
-                    $scope.addRow(itm);
-                });
-        }
-
+        // initialize active transaction table
         $scope.actArr = [
         {   "txn_no": 1,
             "LastLSN": null,
@@ -68,35 +61,48 @@ myApp.controller('RecController', function($scope, AriesData) {
                 $scope.recLSN.push(txn);
 
             }
-
-            // $scope.actArr[txn.txn_no-1].status = "U";
-            // if(!$scope.actTrans.has(txn.txn_no)) {
-            //     $scope.actTrans.add(txn.txn_no);
-            // }
         }
-            // when taking checkpoint, txn_no and pageid should be null
-            // if (txn.txn_type == "CKPT-END"){
-
-            // //     $scope.show_checkpoint = true;
-            //     $scope.actArr = Array.from($scope.actTrans);
-
-            // }
-
-            // no pageid when committing a txn
             if (txn.txn_type == "TXN-COMMIT"){
-
+                // change the status of the txn to "C"
                 $scope.actArr[txn.txn_no-1].status = "C";
-                // $scope.actTrans.delete(txn.txn_no);
 
             }
-            // Only selecting Abort type can make the abortion request valid.
+            // eliminate the txn from the active transaction table
             if (txn.txn_type == "TXN-END"){
                 $scope.actArr[txn.txn_no-1].status = "";
-            //     // $scope.actTrans.delete($scope.txn_no);
 
             }
 
     };
+
+    // to select all the records in the WAL
+    $scope.select_all = function() {
+
+        if($scope.selectall == true){
+            $scope.selectall = false;
+            $scope.SelectedArr = [];
+            for (var i=0; i<4; i++){
+                $scope.actArr[i].status = "";
+            }
+            $scope.recLSN = [];
+
+            for (var i=0; i<$scope.Array.length; i++){
+                $scope.Array[i].Selected = false;
+        }
+
+        } 
+        else{
+            $scope.selectall = true;
+        }
+
+        if($scope.selectall == true){
+            for (var i=0; i<$scope.Array.length; i++){
+                $scope.addRow($scope.Array[i])
+        }
+        }
+        
+
+    }
 
     $scope.analysis = function () {
         // CLEAR TEXTBOX.
@@ -104,29 +110,26 @@ myApp.controller('RecController', function($scope, AriesData) {
             $scope.Array[i].Selected = false;
         }
 
+        //activate analysis phase and deactivate redo and undo phase
         $scope.show_analysis = true;
         $scope.show_redo = false;
         $scope.show_undo = false;
-        $scope.actTrans = new Set([]); // active Transactions
-
+        for (var i=0; i<4; i++){
+            $scope.actArr[i].status = "";
+        }
+        $scope.recLSN = [];
     }
 
 
     $scope.redo = function () {
-        // CLEAR TEXTBOX.
-        // for (var i=0; i<$scope.Array.length; i++){
-        //     $scope.Array[i].Selected = false;
-        // }
+
         $scope.show_analysis = false;
         $scope.show_redo = true;
         $scope.show_undo = false;
     }
 
      $scope.undo = function () {
-        // CLEAR TEXTBOX.
-        // for (var i=0; i<$scope.Array.length; i++){
-        //     $scope.Array[i].Selected = false;
-        // }
+ 
         $scope.show_error = false;
         $scope.show_analysis = false;
         $scope.show_redo = false;
@@ -142,6 +145,7 @@ myApp.controller('RecController', function($scope, AriesData) {
         var select_txn = txn.txn_no;
         var ArrLength = $scope.Array.length;
 
+        //if the select record in ATT has status "C"
         if($scope.actArr[txn.txn_no-1].status=="C"){
 
             var txn = [];
@@ -156,6 +160,7 @@ myApp.controller('RecController', function($scope, AriesData) {
             $scope.Array.push(txn);
             $scope.actArr[select_txn-1].status = "";
         }
+        // otherwise, show error message
         else{
             $scope.show_error = true;
 
@@ -163,7 +168,7 @@ myApp.controller('RecController', function($scope, AriesData) {
     }
 
     $scope.undo_txn = function (txn) {
-        // CLEAR TEXTBOX.
+
         for (var i=0; i<$scope.Array.length; i++){
             $scope.Array[i].Selected = false;
         }
@@ -172,8 +177,10 @@ myApp.controller('RecController', function($scope, AriesData) {
         var select_txn = txn.txn_no;
         var ArrLength = $scope.Array.length;
 
+        //undo those txns with status "U"
         if($scope.actArr[txn.txn_no-1].status=="U"){
 
+            // check the WAL in reversed way, to add CLR operation.
             for (var i=$scope.Array.length-1; i>0; i--){
 
                 if($scope.Array[i].txn_type=="UPDATE" && $scope.Array[i].txn_no == select_txn){
@@ -189,6 +196,7 @@ myApp.controller('RecController', function($scope, AriesData) {
                     txn.old_val = $scope.Array[i].new_val;
                     txn.new_val = $scope.Array[i].old_val;
                     $scope.Array.push(txn);
+                    $scope.actArr[select_txn-1].status = "";
                 }
             }
             var txn = [];

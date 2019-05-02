@@ -5,7 +5,7 @@
     </head>
     <body ng-controller="RecController">
         <div class="container-fluid">
-        	<h2 class="jumbotron text-center">ARIES Recovery</h2>
+            <h2 class="jumbotron text-center">ARIES Recovery</h2>
         </div>
 
         <div class="container-fluid">
@@ -22,7 +22,7 @@
 
             <div class="row">
                 <div class="col col-7">
-                	<!-- <h5>Write Ahead Log</h5> -->
+                    <!-- <h5>Write Ahead Log</h5> -->
                     <div class="sect">
                         <div class="scroll_left">
                             <table class="table table-sm">
@@ -36,7 +36,7 @@
                                     <th>New Value</th>
                                     <!-- <th>Log Entry</th> -->
                                     <th>UndoNextLSN</th>
-                                    <th class="square"><input type="checkbox" ng-model="isAllSelected" ng-click="selectAll(txn)"/></th>
+                                    <th class="square"><input type="checkbox" ng-click="select_all()"/></th>
                                 </tr>
 
                                 <tr ng-repeat="txn in Array">
